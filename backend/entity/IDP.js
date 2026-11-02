@@ -57,6 +57,58 @@ class IDP {
       .map(IDP.fromRow);
   }
 
+  /**
+   * #2 Filter IDPs. Every argument is optional: pass null to ignore it.
+   * Budget and house size are inclusive ranges, duration must match exactly,
+   * styleTag is the name of a style tag.
+   */
+  findByFilters(minBudget, maxBudget, minHouseSize, maxHouseSize, duration, styleTag) {
+    const conditions = [];
+    const params = [];
+    const add = (sql, value) => {
+      if (value === null || value === undefined) return;
+      conditions.push(sql);
+      params.push(value);
+    };
+    add('i.budget >= ?', minBudget);
+    add('i.budget <= ?', maxBudget);
+    add('i.house_size >= ?', minHouseSize);
+    add('i.house_size <= ?', maxHouseSize);
+    add('i.duration = ?', duration);
+    add(
+      `i.id IN (SELECT x.idp_id FROM idp_tag x JOIN tag y ON y.id = x.tag_id
+                 WHERE y.type = 'style' AND y.name = ?)`,
+      styleTag
+    );
+    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+    return this.db
+      .prepare(`${IDP.SELECT} ${where} GROUP BY i.id ORDER BY i.created_at DESC, i.id DESC`)
+      .all(...params)
+      .map(IDP.fromRow);
+  }
+
+  /**
+   * #1 Recommended IDPs. IDPs that share at least one tag with tagPreferences
+   * (a Map of tag name -> count), leaving out the customer's own favourites.
+   */
+  findSimilarIDPs(tagPreferences, favouriteIDPs) {
+    const names = [...tagPreferences.keys()];
+    if (names.length === 0) return [];
+    const favouriteIds = favouriteIDPs.map((f) => f.id);
+    const marks = (list) => list.map(() => '?').join(', ');
+
+    let sql = `${IDP.SELECT}
+       WHERE i.id IN (SELECT x.idp_id FROM idp_tag x JOIN tag y ON y.id = x.tag_id
+                       WHERE y.name IN (${marks(names)}))`;
+    const params = [...names];
+    if (favouriteIds.length > 0) {
+      sql += ` AND i.id NOT IN (${marks(favouriteIds)})`;
+      params.push(...favouriteIds);
+    }
+    sql += ' GROUP BY i.id ORDER BY i.created_at DESC, i.id DESC';
+    return this.db.prepare(sql).all(...params).map(IDP.fromRow);
+  }
+
   static fromRow(row) {
     return {
       id: row.id,
