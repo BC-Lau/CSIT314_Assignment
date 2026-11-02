@@ -25,6 +25,8 @@ Demo accounts (password `password123`): `designer1`, `customer1`, `manager1`, `a
 | Log in | `frontend/login.html` | everyone |
 | Dashboard (options per profile) | `frontend/dashboard.html` | logged in |
 | Create IDP | `frontend/idp-create.html` | Interior Designer |
+| Filter IDPs (#2) | `frontend/filter-idps.html` | Customer |
+| Recommended IDPs (#1) | `frontend/recommendations.html` | Customer |
 
 ## Folder structure
 ```

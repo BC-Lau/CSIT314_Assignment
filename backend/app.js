@@ -5,6 +5,8 @@ const { SessionManager } = require('./utils/session');
 const { attachAccount } = require('./middleware/auth');
 const authRoutes = require('./routes/authRoutes');
 const idpRoutes = require('./routes/idpRoutes');
+const filterRoutes = require('./routes/filterRoutes');
+const recommendRoutes = require('./routes/recommendRoutes');
 
 function createApp(db, { sessions = new SessionManager() } = {}) {
   const app = express();
@@ -14,6 +16,8 @@ function createApp(db, { sessions = new SessionManager() } = {}) {
 
   app.use('/api/auth', authRoutes(db, sessions));
   app.use('/api/idps', idpRoutes(db));
+  app.use('/api/filter', filterRoutes(db));
+  app.use('/api/recommendations', recommendRoutes(db));
 
   app.use('/api', (req, res) => res.status(404).json({ success: false, message: 'Not found' }));
   return app;
