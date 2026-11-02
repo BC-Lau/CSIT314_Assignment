@@ -1,9 +1,14 @@
 // ENTITY: holds user account data and talks to the database.
+// Each profile is a subclass; permissions are methods the subclass overrides.
 const { hashPassword, verifyPassword } = require('../utils/password');
 
 class UserAccount {
-  constructor(db) {
+  constructor(db, data = {}) {
     this.db = db;
+    this.id = data.id;
+    this.username = data.username;
+    this.email = data.email;
+    this.profile = data.profile;
   }
 
   createUserAccount({ username, password, email, profileId }) {
@@ -25,15 +30,19 @@ class UserAccount {
       .get(username);
   }
 
+  /** Returns the active user as the subclass for their profile (e.g. InteriorDesigner), or null. */
   findById(userId) {
+    if (!userId) return null;
     const row = this.db
       .prepare(
-        `SELECT a.id, a.username, a.email, a.is_active, p.name AS profile
+        `SELECT a.id, a.username, a.email, p.name AS profile
            FROM user_account a JOIN user_profile p ON p.id = a.profile_id
-          WHERE a.id = ?`
+          WHERE a.id = ? AND a.is_active = 1`
       )
-      .get(userId);
-    return row ?? null;
+      .get(Number(userId));
+    if (!row) return null;
+    const UserClass = PROFILE_CLASSES[row.profile] ?? UserAccount;
+    return new UserClass(this.db, row);
   }
 
   /**
@@ -51,13 +60,29 @@ class UserAccount {
     };
   }
 
-  /** #12 Logout: remember when the user last logged out. */
-  recordLogout(userId) {
-    const result = this.db
-      .prepare("UPDATE user_account SET last_logout_at = datetime('now') WHERE id = ?")
-      .run(userId);
-    return result.changes === 1;
+  // Permissions: not allowed by default, subclasses override what their profile may do.
+  canCreateIDP() {
+    return false;
   }
 }
 
-module.exports = UserAccount;
+class InteriorDesigner extends UserAccount {
+  canCreateIDP() {
+    return true;
+  }
+}
+
+class Customer extends UserAccount {}
+
+class PlatformManager extends UserAccount {}
+
+class UserAdmin extends UserAccount {}
+
+const PROFILE_CLASSES = {
+  'Interior Designer': InteriorDesigner,
+  'Customer': Customer,
+  'Platform Manager': PlatformManager,
+  'User Admin': UserAdmin,
+};
+
+module.exports = Object.assign(UserAccount, { InteriorDesigner, Customer, PlatformManager, UserAdmin });

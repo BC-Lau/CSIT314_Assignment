@@ -24,13 +24,13 @@
           <div><label for="budget">Budget (S$) <span class="opt">optional</span></label><input id="budget" name="budget" type="number" min="0" step="1000"></div>
           <div><label for="houseSize">House size (sq ft) <span class="opt">optional</span></label><input id="houseSize" name="houseSize" type="number" min="0"></div>
           <div><label for="duration">Duration <span class="opt">optional</span></label><input id="duration" name="duration" placeholder="e.g. 12 weeks"></div>
-          <div><label for="status">Status</label><select id="status" name="status"><option value="current">Current</option><option value="past">Past</option></select></div>
+          <div><label for="visibility">Visibility</label><select id="visibility" name="visibility"><option value="public">Public (shown on home &amp; recommendations)</option><option value="private">Private (only you can see it)</option></select></div>
         </div>
 
         <label for="styleOptions">Style <span class="opt">(exactly one)</span></label>
         <select id="styleOptions" name="style" required></select>
 
-        <label>Room tags <span class="opt">(choose any)</span></label>
+        <label>Room styles <span class="opt">(choose any)</span></label>
         <div id="roomOptions" class="tag-group"></div>
 
         <p style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">

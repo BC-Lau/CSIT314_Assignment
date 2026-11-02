@@ -1,24 +1,36 @@
-// Shared helpers for every page: calling the API and drawing the top navigation.
+// Shared helpers for every page: who is logged in, calling the API and drawing the top navigation.
+
+// The account returned by login, kept in this browser (cleared on logout).
+const Auth = {
+  save(account) { localStorage.setItem('account', JSON.stringify(account)); },
+  get() {
+    try { return JSON.parse(localStorage.getItem('account')); } catch { return null; }
+  },
+  clear() { localStorage.removeItem('account'); },
+};
+
 const Api = {
   async request(method, url, body) {
+    const headers = {};
+    if (body) headers['Content-Type'] = 'application/json';
+    const account = Auth.get();
+    if (account) headers['X-User-Id'] = account.id; // backend uses this to find the user
     const res = await fetch(url, {
       method,
-      headers: body ? { 'Content-Type': 'application/json' } : {},
+      headers,
       body: body ? JSON.stringify(body) : undefined,
-      credentials: 'same-origin',
     });
     const data = await res.json().catch(() => ({}));
     return { status: res.status, ...data };
   },
   get(url) { return this.request('GET', url); },
   post(url, body) { return this.request('POST', url, body ?? {}); },
-  me() { return this.get('/api/auth/me'); },
 };
 
 const Nav = {
   /** Draws the nav bar. Returns the logged-in account (or null). */
-  async render() {
-    const { account } = await Api.me();
+  render() {
+    const account = Auth.get();
     const nav = document.getElementById('nav');
     nav.className = 'nav';
     nav.innerHTML = `<div class="nav-inner">
@@ -44,14 +56,14 @@ const Nav = {
   },
 };
 
-// #12 Logout (boundary side): clickLogout -> LogoutController, then clear the session and go to login.
+// #12 Logout: forget the logged-in account in this browser and go to login.
 const LogoutAction = {
   bind() {
     const btn = document.getElementById('logoutBtn');
     if (btn) btn.addEventListener('click', () => this.clickLogout());
   },
-  async clickLogout() {
-    await Api.post('/api/auth/logout');
+  clickLogout() {
+    Auth.clear();
     this.redirectToLoginPage();
   },
   redirectToLoginPage() {

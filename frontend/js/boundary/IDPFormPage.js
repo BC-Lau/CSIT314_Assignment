@@ -41,15 +41,14 @@ class IDPFormPage {
 
   readForm() {
     const f = new FormData(this.form);
-    const style = f.get('style');
     return {
       title: f.get('title'),
       description: f.get('description'),
       budget: f.get('budget'),
       houseSize: f.get('houseSize'),
       duration: f.get('duration'),
-      status: f.get('status'),
-      tagNames: [...(style ? [style] : []), ...f.getAll('room')],
+      visibility: f.get('visibility'),
+      tagNames: [f.get('style'), ...f.getAll('room')].filter(Boolean),
     };
   }
 

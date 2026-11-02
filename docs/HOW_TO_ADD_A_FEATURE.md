@@ -19,7 +19,9 @@ Use **#13 Create IDP** as the example to copy.
 - **Entity** classes are the only place with SQL. Always use `?` placeholders, never string concatenation.
 - **Controller** methods return `{ success: true, ... }` or `{ success: false, message }`. They never touch `req` / `res`.
 - **Routes** only read the request, call one controller method, and send the result.
-  Protect them with `requireLogin` or `requireProfile('Interior Designer')`.
+  Get the user with `userAccount.findById(req.get('X-User-Id'))` and pass it to the controller.
+- **Permissions** use inheritance: add a `canXxx()` method to `UserAccount` that returns `false`,
+  override it in the subclass that is allowed (e.g. `InteriorDesigner`), and check it first in the controller.
 - **Boundary** classes draw text with `textContent` or `el()`; never put user data into `innerHTML`.
 - Tests use an in-memory database: `createTestDatabase()` from `tests/helpers.js`.
 - Run `npm test` before pushing (`sync.bat` does this for you).

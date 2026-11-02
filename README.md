@@ -33,7 +33,7 @@ backend/
   controller/   CONTROL classes (application logic, one per user story)
   routes/       HTTP endpoints that connect boundary -> controller
   middleware/   login / profile checks
-  utils/        password hashing, sessions
+  utils/        password hashing
   app.js, server.js
 frontend/
   js/boundary/  BOUNDARY classes (one per page)

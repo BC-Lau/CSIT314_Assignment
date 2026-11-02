@@ -19,8 +19,7 @@ CREATE TABLE IF NOT EXISTS user_account (
     email          TEXT,
     profile_id     INTEGER NOT NULL REFERENCES user_profile(id),
     is_active      INTEGER NOT NULL DEFAULT 1,
-    created_at     TEXT    NOT NULL DEFAULT (datetime('now')),
-    last_logout_at TEXT
+    created_at     TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
 -- Interior Design Project (IDP). The style is NOT a column:
@@ -33,7 +32,7 @@ CREATE TABLE IF NOT EXISTS idp (
     budget      INTEGER,                       -- SGD
     house_size  INTEGER,                       -- square feet
     duration    TEXT,                          -- e.g. '12 weeks'
-    status      TEXT    NOT NULL DEFAULT 'current' CHECK (status IN ('current', 'past')),
+    visibility  TEXT    NOT NULL DEFAULT 'public' CHECK (visibility IN ('public', 'private')),  -- private = hidden from home / recommend pages
     created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 

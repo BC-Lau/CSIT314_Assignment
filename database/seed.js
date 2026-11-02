@@ -70,7 +70,7 @@ for (let i = 0; i < COUNTS.customers - 1; i++) addUser(uniqueName('cust'), 'Cust
 for (let i = 0; i < COUNTS.managers - 1; i++) addUser(uniqueName('pm'), 'Platform Manager');
 
 // IDPs: description mentions keywords of its own style / rooms, so #23 keyword matching has something to find
-const insertIDP = db.prepare(`INSERT INTO idp (designer_id, title, description, budget, house_size, duration, status, created_at)
+const insertIDP = db.prepare(`INSERT INTO idp (designer_id, title, description, budget, house_size, duration, visibility, created_at)
                               VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
 const linkTag = db.prepare('INSERT INTO idp_tag (idp_id, tag_id) VALUES (?, ?)');
 const styles = Object.keys(presetTags.style);
@@ -90,7 +90,7 @@ for (let i = 0; i < COUNTS.idps; i++) {
   const id = Number(insertIDP.run(
     pick(users['Interior Designer']), title, description,
     int(15, 250) * 1000, int(400, 3000), `${int(4, 20)} weeks`,
-    rand() < 0.3 ? 'current' : 'past', createdAt
+    rand() < 0.8 ? 'public' : 'private', createdAt
   ).lastInsertRowid);
   linkTag.run(id, tagId[style]);
   for (const r of roomList) linkTag.run(id, tagId[r]);

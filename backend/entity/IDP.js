@@ -7,7 +7,7 @@ class IDP {
   /**
    * Creates an IDP and links its tags in one transaction.
    * @param {number} designerId
-   * @param {{title, description, budget, houseSize, duration, status}} idpData
+   * @param {{title, description, budget, houseSize, duration, visibility}} idpData
    * @param {{id:number}[]} tags  already-validated Tag objects
    */
   createIDP(designerId, idpData, tags) {
@@ -15,17 +15,17 @@ class IDP {
     try {
       const result = this.db
         .prepare(
-          `INSERT INTO idp (designer_id, title, description, budget, house_size, duration, status)
+          `INSERT INTO idp (designer_id, title, description, budget, house_size, duration, visibility)
            VALUES (?, ?, ?, ?, ?, ?, ?)`
         )
         .run(
           designerId,
           idpData.title,
           idpData.description,
-          idpData.budget ?? null,
-          idpData.houseSize ?? null,
-          idpData.duration ?? null,
-          idpData.status ?? 'current'
+          idpData.budget,
+          idpData.houseSize,
+          idpData.duration,
+          idpData.visibility
         );
       const idpId = Number(result.lastInsertRowid);
       const link = this.db.prepare('INSERT INTO idp_tag (idp_id, tag_id) VALUES (?, ?)');
@@ -45,14 +45,14 @@ class IDP {
 
   getIDPsByDesigner(designerId) {
     return this.db
-      .prepare(`${IDP.SELECT} WHERE i.designer_id = ? GROUP BY i.id ORDER BY i.created_at DESC`)
+      .prepare(`${IDP.SELECT} WHERE i.designer_id = ? GROUP BY i.id ORDER BY i.created_at DESC, i.id DESC`)
       .all(designerId)
       .map(IDP.fromRow);
   }
 
   getLatestIDPs(limit = 12) {
     return this.db
-      .prepare(`${IDP.SELECT} GROUP BY i.id ORDER BY i.created_at DESC, i.id DESC LIMIT ?`)
+      .prepare(`${IDP.SELECT} WHERE i.visibility = 'public' GROUP BY i.id ORDER BY i.created_at DESC, i.id DESC LIMIT ?`)
       .all(limit)
       .map(IDP.fromRow);
   }
@@ -67,7 +67,7 @@ class IDP {
       budget: row.budget,
       houseSize: row.house_size,
       duration: row.duration,
-      status: row.status,
+      visibility: row.visibility,
       createdAt: row.created_at,
       style: row.style_tag ?? null,
       rooms: row.room_tags ? row.room_tags.split('|') : [],

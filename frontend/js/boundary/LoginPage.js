@@ -21,6 +21,7 @@ class LoginPage {
       password: data.get('password'),
     });
     if (result.success) {
+      Auth.save(result.account);
       this.displaySuccess(result.account);
       this.redirectToDashboard(result.account.profile);
     } else {
