@@ -26,6 +26,14 @@ class Tag {
       .map(Tag.fromRow);
   }
 
+  /** #23 fallback: tags whose name or keywords appear in the description (case-insensitive). */
+  matchByKeywords(description) {
+    const text = String(description ?? '').toLowerCase();
+    return this.getAllTags().filter((tag) =>
+      [tag.name, ...tag.keywords].some((word) => text.includes(word.toLowerCase()))
+    );
+  }
+
   getTagsByIDP(idpId) {
     return this.db
       .prepare(
