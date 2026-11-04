@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('node:path');
 const authRoutes = require('./routes/authRoutes');
 const idpRoutes = require('./routes/idpRoutes');
+const recommendRoutes = require('./routes/recommendRoutes');
 
 function createApp(db) {
   const app = express();
@@ -11,6 +12,7 @@ function createApp(db) {
 
   app.use('/api/auth', authRoutes(db));
   app.use('/api/idps', idpRoutes(db));
+  app.use('/api/recommendations', recommendRoutes(db));
 
   app.use('/api', (req, res) => res.status(404).json({ success: false, message: 'Not found' }));
   return app;
