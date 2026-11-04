@@ -3,7 +3,7 @@
 
 const DEFAULT_MAX_RECOMMENDATIONS = 10;
 
-const tagNames = (idp) => [idp.style, ...idp.rooms].filter(Boolean);
+const tagNames = (idp) => [idp.style, ...idp.type].filter(Boolean);
 
 class RecommendIDPController {
   /**

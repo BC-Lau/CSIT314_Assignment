@@ -1,20 +1,45 @@
-// CONTROLLER: #23 "As an Interior Designer, I want tags suggested from my IDP description".
-// Boundary (IDPFormPage) -> SuggestTagsController -> AIService (boundary), Tag (entity)
-// TDD v2: main flow + AI-failure fallback work, but no invalid data checks
-// (who the user is, empty description, AI suggests nothing valid).
+// CONTROLLER: #23 "As an Interior Designer, I want to have automated categorisation of my IDPs".
+// Boundary (IDPFormPage) -> SuggestTagsController -> AIService (boundary), IDP (entity)
 class SuggestTagsController {
-  constructor(tag, aiService) {
-    this.tag = tag;
+  /**
+   * @param {import('../entity/IDP')} idp
+   * @param {import('../boundary/AIService') | null} aiService  null = no AI, keyword matching only
+   */
+  constructor(idp, aiService) {
+    this.idp = idp;
     this.aiService = aiService;
   }
 
-  async suggestTags(user, description) {
+  /** Only suggests: nothing is saved, so no login check here (createIDP checks it). */
+  async suggestTags(description) {
+    const text = String(description).trim();
+
+    const styleNames = this.idp.getTagsByType('style');
+    const typeNames = this.idp.getTagsByType('type');
+
+    let suggestedTags = [];
     try {
-      const names = await this.aiService.requestTags(description, this.tag.getAllTags().map((t) => t.name));
-      return { success: true, tags: this.tag.findByNames(names) };
+      if (!this.aiService) throw new Error('AI service is not configured');
+      const { style, types } = await this.aiService.requestTags(text, styleNames, typeNames);
+      suggestedTags = [style, ...types];
     } catch {
-      return { success: true, tags: this.tag.matchByKeywords(description) };
+      // AI failed or timed out: fall back to keyword matching
+      suggestedTags = this.idp.matchByKeywords(text);
     }
+
+    const { styleTag, typeTags } = this.keepOneStyle(suggestedTags);
+    const result = { success: true, styleTag, typeTags };
+    if (!styleTag) result.message = 'No style matched, please choose a style';
+    return result;
+  }
+
+  /** Exactly 1 style (the first = best match) + all types. */
+  keepOneStyle(tags) {
+    const styleNames = this.idp.getTagsByType('style');
+    return {
+      styleTag: tags.find((t) => styleNames.includes(t)) ?? null,
+      typeTags: tags.filter((t) => !styleNames.includes(t)),
+    };
   }
 }
 

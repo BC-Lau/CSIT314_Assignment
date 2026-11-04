@@ -27,15 +27,19 @@
           <div><label for="visibility">Visibility</label><select id="visibility" name="visibility"><option value="public">Public (shown on home &amp; recommendations)</option><option value="private">Private (only you can see it)</option></select></div>
         </div>
 
+        <p style="margin-top:16px">
+          <button class="btn secondary" type="button" id="suggestBtn">Suggest tags from description</button>
+        </p>
+
         <label for="styleOptions">Style <span class="opt">(exactly one)</span></label>
         <select id="styleOptions" name="style" required></select>
 
-        <label>Room styles <span class="opt">(choose any)</span></label>
-        <div id="roomOptions" class="tag-group"></div>
+        <label>Room types <span class="opt">(choose any)</span></label>
+        <div id="typeOptions" class="tag-group"></div>
+        <p id="tagSummary" class="muted"></p>
 
         <p style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
           <button class="btn" type="submit">Create IDP</button>
-          <button class="btn secondary" type="button" id="suggestBtn" disabled title="Coming in #23">Suggest tags (#23, coming soon)</button>
         </p>
       </form>
       <p id="message"></p>

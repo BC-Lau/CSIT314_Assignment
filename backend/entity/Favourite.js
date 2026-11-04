@@ -13,7 +13,6 @@ class Favourite {
         `${IDP.SELECT}
            JOIN favourite f ON f.idp_id = i.id
           WHERE f.user_id = ?
-          GROUP BY i.id
           ORDER BY f.saved_at DESC, i.id DESC`
       )
       .all(userId)

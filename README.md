@@ -33,14 +33,13 @@ backend/
   entity/       ENTITY classes  (data + database access)
   controller/   CONTROL classes (application logic, one per user story)
   routes/       HTTP endpoints that connect boundary -> controller
-  middleware/   login / profile checks
   utils/        password hashing
   app.js, server.js
 frontend/
   js/boundary/  BOUNDARY classes (one per page)
   js/common.js  shared API + navigation helpers
   *.html, css/
-database/       schema.sql, db.js, seed.js, presetTags.js
+database/       schema.sql, db.js, seed.js, presetTags.js + tags.txt (preset styles / types)
 tests/          unit tests (*.test.js)
 docs/           diagrams, guides (see docs/HOW_TO_ADD_A_FEATURE.md)
 ```

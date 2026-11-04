@@ -1,0 +1,88 @@
+IDP Tags
+Styles:
+Contemporary
+Modern
+Japanese
+Minimalism
+Scandinavian
+Industrial
+Luxury
+Peranakan
+Persian
+Japandi
+Classical
+Eclectic
+Country
+Rustic
+Wabi Sabi
+Futuristic
+Mid Century
+Bohemian
+Vintage
+
+
+Types:
+Living Room
+Dining Room
+Kitchen
+Bedroom
+Bathroom
+Foyer
+Balcony
+Study Room
+TV Console
+Kitchen Island
+Altar
+Walk In Wardrobe
+Service Yard
+Feature Wall
+Window Seat
+Kitchen Peninsula
+Bar Counter
+Platform Bed
+Garden
+Swimming Pool
+Yard
+
+
+Keywords:
+Contemporary: contemporary, current trend, sleek
+Modern: modern, clean lines, open plan
+Japanese: japanese, tatami, shoji, zen
+Minimalism: minimalist, minimalism, clutter-free, simple
+Scandinavian: scandinavian, nordic, scandi, light wood
+Industrial: industrial, exposed brick, concrete, metal
+Luxury: luxury, marble, gold, premium
+Peranakan: peranakan, nyonya, patterned tiles
+Persian: persian, carpet, arabesque
+Japandi: japandi, japanese scandinavian, warm minimal
+Classical: classical, moulding, chandelier, symmetry
+Eclectic: eclectic, mix and match, colourful
+Country: country, farmhouse, cottage
+Rustic: rustic, reclaimed wood, raw timber
+Wabi Sabi: wabi sabi, wabi-sabi, imperfect, earthy
+Futuristic: futuristic, smart home, led strip, high-tech
+Mid Century: mid century, mid-century, retro, tapered legs
+Bohemian: bohemian, boho, rattan, macrame
+Vintage: vintage, antique, heritage
+Living Room: living room, living area, sofa
+Dining Room: dining room, dining area, dining table
+Kitchen: kitchen, cabinets, countertop
+Bedroom: bedroom, master room, wardrobe
+Bathroom: bathroom, toilet, shower, vanity
+Foyer: foyer, entrance, shoe cabinet
+Balcony: balcony, planter
+Study Room: study room, study, home office, work from home
+TV Console: tv console, tv wall, entertainment unit
+Kitchen Island: kitchen island, island counter
+Altar: altar, prayer
+Walk In Wardrobe: walk in wardrobe, walk-in wardrobe, dressing room
+Service Yard: service yard, laundry
+Feature Wall: feature wall, accent wall
+Window Seat: window seat, bay window
+Kitchen Peninsula: kitchen peninsula, peninsula
+Bar Counter: bar counter, bar, wine
+Platform Bed: platform bed, raised bed
+Garden: garden, landscaping
+Swimming Pool: swimming pool, pool
+Yard: yard, backyard, patio

@@ -22,8 +22,7 @@ CREATE TABLE IF NOT EXISTS user_account (
     created_at     TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
--- Interior Design Project (IDP). The style is NOT a column:
--- it is stored as a tag of type 'style' (exactly 1 per IDP).
+-- Interior Design Project (IDP). style / type values come from database/tags.txt
 CREATE TABLE IF NOT EXISTS idp (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     designer_id INTEGER NOT NULL REFERENCES user_account(id),
@@ -33,22 +32,9 @@ CREATE TABLE IF NOT EXISTS idp (
     house_size  INTEGER,                       -- square feet
     duration    TEXT,                          -- e.g. '12 weeks'
     visibility  TEXT    NOT NULL DEFAULT 'public' CHECK (visibility IN ('public', 'private')),  -- private = hidden from home / recommend pages
+    style       TEXT    NOT NULL,              -- exactly 1 preset style
+    type        TEXT    NOT NULL DEFAULT '[]', -- JSON array, 0..* preset types
     created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
-);
-
--- Preset tags from attachment/tags.txt
-CREATE TABLE IF NOT EXISTS tag (
-    id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    name     TEXT NOT NULL UNIQUE,
-    type     TEXT NOT NULL CHECK (type IN ('style', 'room')),
-    keywords TEXT NOT NULL DEFAULT '[]'        -- JSON array, used by #23 keyword matching
-);
-
--- Many-to-many: IDP <-> Tag
-CREATE TABLE IF NOT EXISTS idp_tag (
-    idp_id INTEGER NOT NULL REFERENCES idp(id) ON DELETE CASCADE,
-    tag_id INTEGER NOT NULL REFERENCES tag(id),
-    PRIMARY KEY (idp_id, tag_id)
 );
 
 -- #25: a customer contacting an interior designer

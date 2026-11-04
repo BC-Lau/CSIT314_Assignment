@@ -1,21 +1,17 @@
 // CONTROLLER: #13 "As an Interior Designer, I want to create an IDP".
-// Boundary (IDPFormPage) -> CreateIDPController -> Tag, IDP (entities)
+// Boundary (IDPFormPage) -> CreateIDPController -> IDP (entity)
 const VISIBILITIES = ['public', 'private'];
 const isBlank = (v) => v == null || v === '';
 const toNumber = (v) => (isBlank(v) ? null : Number(v));
 
 class CreateIDPController {
-  /**
-   * @param {import('../entity/Tag')} tag
-   * @param {import('../entity/IDP')} idp
-   */
-  constructor(tag, idp) {
-    this.tag = tag;
+  /** @param {import('../entity/IDP')} idp */
+  constructor(idp) {
     this.idp = idp;
   }
 
   getTagOptions() {
-    return this.tag.getAllTags();
+    return { styles: this.idp.getTagsByType('style'), types: this.idp.getTagsByType('type') };
   }
 
   /** @param {import('../entity/UserAccount') | null} user  the logged-in user (a profile subclass) */
@@ -38,25 +34,24 @@ class CreateIDPController {
       }
     }
 
-    const tagNames = [...new Set(idpData.tagNames ?? [])];
-    const validTags = this.tag.findByNames(tagNames);
-    const styleCount = validTags.filter((t) => t.type === 'style').length;
-    if (validTags.length !== tagNames.length || styleCount !== 1) {
+    // Exactly 1 preset style, 0..* preset types
+    const type = idpData.type ?? [];
+    const styleOk = this.idp.getTagsByType('style').includes(idpData.style);
+    const presetTypes = this.idp.getTagsByType('type');
+    if (!styleOk || !Array.isArray(type) || !type.every((t) => presetTypes.includes(t))) {
       return { success: false, message: 'Invalid tags: need exactly 1 style' };
     }
 
-    const newIDP = this.idp.createIDP(
-      user.id,
-      {
-        title,
-        description,
-        budget: toNumber(idpData.budget),
-        houseSize: toNumber(idpData.houseSize),
-        duration: idpData.duration ? String(idpData.duration).trim() : null,
-        visibility,
-      },
-      validTags
-    );
+    const newIDP = this.idp.createIDP(user.id, {
+      title,
+      description,
+      budget: toNumber(idpData.budget),
+      houseSize: toNumber(idpData.houseSize),
+      duration: idpData.duration ? String(idpData.duration).trim() : null,
+      visibility,
+      style: idpData.style,
+      type: [...new Set(type)],
+    });
     return { success: true, idp: newIDP };
   }
 }

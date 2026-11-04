@@ -24,7 +24,7 @@ test('R-02a getFavouriteIDPs returns the IDPs the customer saved, with their tag
   assert.deepEqual(sortedIds(result), [1, 3]);
   const first = result.find((i) => i.id === 1);
   assert.equal(first.style, 'Modern');
-  assert.deepEqual([...first.rooms].sort(), ['Kitchen', 'Living Room']);
+  assert.deepEqual([...first.type].sort(), ['Kitchen', 'Living Room']);
 });
 
 test('R-02b getFavouriteIDPs only returns that customer\'s favourites', () => {

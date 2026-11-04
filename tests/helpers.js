@@ -9,12 +9,19 @@ function profileId(db, name) {
   return db.prepare('SELECT id FROM user_profile WHERE name = ?').get(name).id;
 }
 
-/** Inserts tags in the presetTags.js format: { style: { Name: [keywords] }, room: { ... } } */
-function addTags(db, tagsByType) {
-  const insert = db.prepare('INSERT INTO tag (name, type, keywords) VALUES (?, ?, ?)');
-  for (const [type, tags] of Object.entries(tagsByType)) {
-    for (const [name, keywords] of Object.entries(tags)) insert.run(name, type, JSON.stringify(keywords));
-  }
-}
+/** A small preset list in the loadPresetTags() format, so tests do not depend on database/tags.txt. */
+const PRESET_TAGS = {
+  style: {
+    'Modern': ['modern', 'clean lines'],
+    'Japanese': ['japanese', 'tatami', 'zen'],
+    'Industrial': ['industrial', 'exposed brick'],
+    'Wabi Sabi': ['imperfect'],
+  },
+  type: {
+    'Kitchen': ['kitchen', 'countertop'],
+    'Bedroom': ['bedroom', 'wardrobe'],
+    'Bar Counter': ['bar counter', 'bar'],
+  },
+};
 
-module.exports = { createTestDatabase, profileId, addTags };
+module.exports = { createTestDatabase, profileId, PRESET_TAGS };

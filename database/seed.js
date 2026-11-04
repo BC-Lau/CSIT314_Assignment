@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createDatabase } = require('./db');
 const { hashPassword } = require('../backend/utils/password');
-const presetTags = require('./presetTags');
+const { loadPresetTags } = require('./presetTags');
 
 const DB_FILE = path.join(__dirname, 'app.db');
 const PASSWORD = 'password123';
@@ -37,14 +37,9 @@ if (fs.existsSync(DB_FILE)) fs.unlinkSync(DB_FILE);
 const db = createDatabase(DB_FILE);
 const profileId = (name) => db.prepare('SELECT id FROM user_profile WHERE name = ?').get(name).id;
 
-db.exec('BEGIN');
+const presetTags = loadPresetTags();
 
-// Tags
-const insertTag = db.prepare('INSERT INTO tag (name, type, keywords) VALUES (?, ?, ?)');
-for (const type of ['style', 'room']) {
-  for (const [name, keywords] of Object.entries(presetTags[type])) insertTag.run(name, type, JSON.stringify(keywords));
-}
-const tagId = Object.fromEntries(db.prepare('SELECT id, name FROM tag').all().map((t) => [t.name, t.id]));
+db.exec('BEGIN');
 
 // Accounts (fixed demo accounts first, then random ones)
 const insertUser = db.prepare('INSERT INTO user_account (username, password_hash, email, profile_id, created_at) VALUES (?, ?, ?, ?, ?)');
@@ -69,31 +64,28 @@ for (let i = 0; i < COUNTS.designers - 1; i++) addUser(uniqueName('design'), 'In
 for (let i = 0; i < COUNTS.customers - 1; i++) addUser(uniqueName('cust'), 'Customer');
 for (let i = 0; i < COUNTS.managers - 1; i++) addUser(uniqueName('pm'), 'Platform Manager');
 
-// IDPs: description mentions keywords of its own style / rooms, so #23 keyword matching has something to find
-const insertIDP = db.prepare(`INSERT INTO idp (designer_id, title, description, budget, house_size, duration, visibility, created_at)
-                              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
-const linkTag = db.prepare('INSERT INTO idp_tag (idp_id, tag_id) VALUES (?, ?)');
+// IDPs: description mentions keywords of its own style / types, so #23 keyword matching has something to find
+const insertIDP = db.prepare(`INSERT INTO idp (designer_id, title, description, budget, house_size, duration, visibility, style, type, created_at)
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
 const styles = Object.keys(presetTags.style);
-const rooms = Object.keys(presetTags.room);
+const types = Object.keys(presetTags.type);
 const idps = [];
 for (let i = 0; i < COUNTS.idps; i++) {
   const style = pick(styles);
-  const roomList = pickSome(rooms, int(1, 4));
+  const typeList = pickSome(types, int(1, 4));
   const home = pick(HOMES);
   const area = pick(AREAS);
   const title = `${style} ${home} in ${area}`;
   const description =
-    `A ${pick(presetTags.style[style])} makeover for a ${home} in ${area}. ` +
-    `We redesigned the ${roomList.map((r) => pick(presetTags.room[r])).join(', ')} ` +
+    `A ${pick([style.toLowerCase(), ...presetTags.style[style]])} makeover for a ${home} in ${area}. ` +
+    `We redesigned the ${typeList.map((t) => pick([t.toLowerCase(), ...presetTags.type[t]])).join(', ')} ` +
     `with ${pick(['plenty of storage', 'better lighting', 'an open layout', 'natural materials', 'a calm colour palette'])}.`;
   const createdAt = daysAgo(365);
   const id = Number(insertIDP.run(
     pick(users['Interior Designer']), title, description,
     int(15, 250) * 1000, int(400, 3000), `${int(4, 20)} weeks`,
-    rand() < 0.8 ? 'public' : 'private', createdAt
+    rand() < 0.8 ? 'public' : 'private', style, JSON.stringify(typeList), createdAt
   ).lastInsertRowid);
-  linkTag.run(id, tagId[style]);
-  for (const r of roomList) linkTag.run(id, tagId[r]);
   idps.push(id);
 }
 
@@ -119,9 +111,7 @@ db.exec('COMMIT');
 const count = (t) => db.prepare(`SELECT COUNT(*) AS n FROM ${t}`).get().n;
 console.log(`Seeded database/app.db
   user_account    ${count('user_account')}
-  tag             ${count('tag')}
   idp             ${count('idp')}
-  idp_tag         ${count('idp_tag')}
   contact_request ${count('contact_request')}
   favourite       ${count('favourite')}
 Demo logins (password: ${PASSWORD}): admin, designer1, customer1, manager1`);

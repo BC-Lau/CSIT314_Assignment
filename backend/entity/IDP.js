@@ -1,65 +1,94 @@
-// ENTITY: Interior Design Project.
+// ENTITY: Interior Design Project. Each IDP has exactly 1 style and 0..* types,
+// both taken from the preset list in database/tags.txt.
+const { loadPresetTags } = require('../../database/presetTags');
+
 class IDP {
-  constructor(db) {
+  /** @param loadPreset  returns { style: {name: keywords[]}, type: {...} }; tests pass a small fixed list */
+  constructor(db, loadPreset = loadPresetTags) {
     this.db = db;
+    this.loadPreset = loadPreset;
   }
 
   /**
-   * Creates an IDP and links its tags in one transaction.
    * @param {number} designerId
-   * @param {{title, description, budget, houseSize, duration, visibility}} idpData
-   * @param {{id:number}[]} tags  already-validated Tag objects
+   * @param {{title, description, budget, houseSize, duration, visibility, style, type}} idpData  already validated
    */
-  createIDP(designerId, idpData, tags) {
-    this.db.exec('BEGIN');
-    try {
-      const result = this.db
-        .prepare(
-          `INSERT INTO idp (designer_id, title, description, budget, house_size, duration, visibility)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`
-        )
-        .run(
-          designerId,
-          idpData.title,
-          idpData.description,
-          idpData.budget,
-          idpData.houseSize,
-          idpData.duration,
-          idpData.visibility
-        );
-      const idpId = Number(result.lastInsertRowid);
-      const link = this.db.prepare('INSERT INTO idp_tag (idp_id, tag_id) VALUES (?, ?)');
-      for (const tag of tags) link.run(idpId, tag.id);
-      this.db.exec('COMMIT');
-      return this.getIDPById(idpId);
-    } catch (err) {
-      this.db.exec('ROLLBACK');
-      throw err;
-    }
+  createIDP(designerId, idpData) {
+    const result = this.db
+      .prepare(
+        `INSERT INTO idp (designer_id, title, description, budget, house_size, duration, visibility, style, type)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      )
+      .run(
+        designerId,
+        idpData.title,
+        idpData.description,
+        idpData.budget,
+        idpData.houseSize,
+        idpData.duration,
+        idpData.visibility,
+        idpData.style,
+        JSON.stringify(idpData.type)
+      );
+    return this.getIDPById(Number(result.lastInsertRowid));
   }
 
   getIDPById(idpId) {
-    const row = this.db.prepare(`${IDP.SELECT} WHERE i.id = ? GROUP BY i.id`).get(idpId);
+    const row = this.db.prepare(`${IDP.SELECT} WHERE i.id = ?`).get(idpId);
     return row ? IDP.fromRow(row) : null;
   }
 
   getIDPsByDesigner(designerId) {
     return this.db
-      .prepare(`${IDP.SELECT} WHERE i.designer_id = ? GROUP BY i.id ORDER BY i.created_at DESC, i.id DESC`)
+      .prepare(`${IDP.SELECT} WHERE i.designer_id = ? ORDER BY i.created_at DESC, i.id DESC`)
       .all(designerId)
       .map(IDP.fromRow);
   }
 
   getLatestIDPs(limit = 12) {
     return this.db
-      .prepare(`${IDP.SELECT} WHERE i.visibility = 'public' GROUP BY i.id ORDER BY i.created_at DESC, i.id DESC LIMIT ?`)
+      .prepare(`${IDP.SELECT} WHERE i.visibility = 'public' ORDER BY i.created_at DESC, i.id DESC LIMIT ?`)
       .all(limit)
       .map(IDP.fromRow);
   }
 
+  // ---------- #23 preset styles / types ----------
+
+  /** @param {'style' | 'type'} category */
+  getTagsByType(category) {
+    return Object.keys(this.loadPreset()[category] ?? {});
+  }
+
+  /** Keeps only preset names, in the given order, without duplicates. */
+  findByNames(names) {
+    if (!Array.isArray(names)) return [];
+    const preset = this.loadPreset();
+    const known = (name) => Object.hasOwn(preset.style, name) || Object.hasOwn(preset.type, name);
+    return [...new Set(names)].filter((name) => typeof name === 'string' && known(name));
+  }
+
   /**
-   * #1 Recommended IDPs. Public IDPs that share at least one tag with tagPreferences
-   * (a Map of tag name -> count), leaving out the customer's own favourites.
+   * #23 fallback when the AI service fails: names whose name or keywords appear in the
+   * description (whole words, any case). Best match first = most keywords found.
+   */
+  matchByKeywords(description) {
+    if (typeof description !== 'string' || !description.trim()) return [];
+    const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const appears = (word) => new RegExp(`\\b${escape(word)}\\b`, 'i').test(description);
+    const preset = this.loadPreset();
+    return [...Object.entries(preset.style), ...Object.entries(preset.type)]
+      .map(([name, keywords]) => {
+        const words = new Set([name, ...keywords].map((w) => w.toLowerCase()));
+        return { name, hits: [...words].filter(appears).length };
+      })
+      .filter((m) => m.hits > 0)
+      .sort((a, b) => b.hits - a.hits || a.name.localeCompare(b.name))
+      .map((m) => m.name);
+  }
+
+  /**
+   * #1 Recommended IDPs. Public IDPs that share at least one style or type name with
+   * tagPreferences (a Map of name -> count), excluding IDPs already in customer's favourites.
    */
   findSimilarIDPs(tagPreferences, favouriteIDPs) {
     const names = [...tagPreferences.keys()];
@@ -69,14 +98,14 @@ class IDP {
 
     let sql = `${IDP.SELECT}
        WHERE i.visibility = 'public'
-         AND i.id IN (SELECT x.idp_id FROM idp_tag x JOIN tag y ON y.id = x.tag_id
-                       WHERE y.name IN (${marks(names)}))`;
-    const params = [...names];
+         AND (i.style IN (${marks(names)})
+              OR EXISTS (SELECT 1 FROM json_each(i.type) WHERE value IN (${marks(names)})))`;
+    const params = [...names, ...names];
     if (favouriteIds.length > 0) {
       sql += ` AND i.id NOT IN (${marks(favouriteIds)})`;
       params.push(...favouriteIds);
     }
-    sql += ' GROUP BY i.id ORDER BY i.created_at DESC, i.id DESC';
+    sql += ' ORDER BY i.created_at DESC, i.id DESC';
     return this.db.prepare(sql).all(...params).map(IDP.fromRow);
   }
 
@@ -91,20 +120,16 @@ class IDP {
       houseSize: row.house_size,
       duration: row.duration,
       visibility: row.visibility,
+      style: row.style,
+      type: JSON.parse(row.type),
       createdAt: row.created_at,
-      style: row.style_tag ?? null,
-      rooms: row.room_tags ? row.room_tags.split('|') : [],
     };
   }
 }
 
 IDP.SELECT = `
-  SELECT i.*, a.username AS designer_name,
-         MAX(CASE WHEN t.type = 'style' THEN t.name END) AS style_tag,
-         GROUP_CONCAT(CASE WHEN t.type = 'room' THEN t.name END, '|') AS room_tags
+  SELECT i.*, a.username AS designer_name
     FROM idp i
-    JOIN user_account a ON a.id = i.designer_id
-    LEFT JOIN idp_tag it ON it.idp_id = i.id
-    LEFT JOIN tag t ON t.id = it.tag_id`;
+    JOIN user_account a ON a.id = i.designer_id`;
 
 module.exports = IDP;

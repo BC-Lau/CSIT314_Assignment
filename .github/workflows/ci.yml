@@ -1,18 +1,26 @@
 name: CI
 
+# Runs the tests on every branch, so a feature branch shows the TDD "red" (failing)
+# and "green" (passing) runs before it is merged into main with a pull request.
 on:
   push:
-    branches: [main]
+    branches: ['**']
   pull_request:
     branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22, 24]   # lowest supported version (package.json engines) + current
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
-      - run: npm install
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci
       - run: npm test
+      - name: Seed test data (checks the >=100 rows per table script still works)
+        run: npm run seed
