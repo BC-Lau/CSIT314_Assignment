@@ -64,6 +64,10 @@ class UserAccount {
   canCreateIDP() {
     return false;
   }
+
+  canViewRecommendations() {
+    return false;
+  }
 }
 
 class InteriorDesigner extends UserAccount {
@@ -72,7 +76,11 @@ class InteriorDesigner extends UserAccount {
   }
 }
 
-class Customer extends UserAccount {}
+class Customer extends UserAccount {
+  canViewRecommendations() {
+    return true;
+  }
+}
 
 class PlatformManager extends UserAccount {}
 

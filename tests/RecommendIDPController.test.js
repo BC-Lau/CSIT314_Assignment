@@ -79,12 +79,6 @@ test('R-09 no logged-in user is refused', () => {
   assert.equal(result.message, 'Only customers can see recommendations');
 });
 
-test('R-12 an interior designer is refused', () => {
-  const result = controller.getRecommendations(userOf(db, designerId));
-  assert.equal(result.success, false);
-  assert.equal(result.message, 'Only customers can see recommendations');
-});
-
 test('R-10 getPreferredTags of an empty list is an empty map', () => {
   assert.equal(controller.getPreferredTags([]).size, 0);
 });
@@ -99,6 +93,12 @@ test('R-11 IDPs with the same score are ordered newest first', () => {
 
   setCreated(2, '2026-03-01 00:00:00');
   assert.deepEqual(ids(controller.getRecommendations(userOf(db, customers.c2)).idps), [2, 5]);
+});
+
+test('R-12 an interior designer is refused', () => {
+  const result = controller.getRecommendations(userOf(db, designerId));
+  assert.equal(result.success, false);
+  assert.equal(result.message, 'Only customers can see recommendations');
 });
 
 test('R-13 private IDPs are never recommended', () => {
