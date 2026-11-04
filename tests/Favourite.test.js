@@ -19,7 +19,7 @@ beforeEach(() => {
   favourite = new Favourite(data.db);
 });
 
-test('R-02 getFavouriteIDPs returns the IDPs the customer saved, with their tags', () => {
+test('R-02a getFavouriteIDPs returns the IDPs the customer saved, with their tags', () => {
   const result = favourite.getFavouriteIDPs(customers.c1);
   assert.deepEqual(sortedIds(result), [1, 3]);
   const first = result.find((i) => i.id === 1);
@@ -27,14 +27,14 @@ test('R-02 getFavouriteIDPs returns the IDPs the customer saved, with their tags
   assert.deepEqual([...first.rooms].sort(), ['Kitchen', 'Living Room']);
 });
 
-test('getFavouriteIDPs only returns that customer\'s favourites', () => {
+test('R-02b getFavouriteIDPs only returns that customer\'s favourites', () => {
   assert.deepEqual(sortedIds(favourite.getFavouriteIDPs(customers.c3)), [6]);
 });
 
-test('getFavouriteIDPs returns an empty list for a customer with no favourites', () => {
+test('R-02c getFavouriteIDPs returns an empty list for a customer with no favourites', () => {
   assert.deepEqual(favourite.getFavouriteIDPs(customers.c2), []);
 });
 
-test('getFavouriteIDPs returns an empty list for an unknown user id', () => {
+test('R-02d getFavouriteIDPs returns an empty list for an unknown user id', () => {
   assert.deepEqual(favourite.getFavouriteIDPs(999), []);
 });
