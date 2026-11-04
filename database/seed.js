@@ -106,6 +106,14 @@ for (let i = 0; i < COUNTS.contacts; i++) {
     pick(['Hi, can I get a quote?', 'Love this design!', 'Are you available next month?', 'Please contact me.']), daysAgo(90));
 }
 
+// Favourites (#1): customer1 always has some favourites 
+// and the other customers save 0 to 8 IDPs each.
+const insertFavourite = db.prepare('INSERT OR IGNORE INTO favourite (user_id, idp_id, saved_at) VALUES (?, ?, ?)');
+users.Customer.forEach((customerId, index) => {
+  const howMany = index === 0 ? 6 : int(0, 8);
+  for (const idpId of pickSome(idps, howMany)) insertFavourite.run(customerId, idpId, daysAgo(60));
+});
+
 db.exec('COMMIT');
 
 const count = (t) => db.prepare(`SELECT COUNT(*) AS n FROM ${t}`).get().n;
@@ -115,5 +123,6 @@ console.log(`Seeded database/app.db
   idp             ${count('idp')}
   idp_tag         ${count('idp_tag')}
   contact_request ${count('contact_request')}
+  favourite       ${count('favourite')}
 Demo logins (password: ${PASSWORD}): admin, designer1, customer1, manager1`);
 db.close();
