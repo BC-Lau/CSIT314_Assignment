@@ -86,6 +86,29 @@ class IDP {
       .map((m) => m.name);
   }
 
+  /**
+   * #1 Recommended IDPs. Public IDPs that share at least one style or type name with
+   * tagPreferences (a Map of name -> count), excluding IDPs already in customer's favourites.
+   */
+  findSimilarIDPs(tagPreferences, favouriteIDPs) {
+    const names = [...tagPreferences.keys()];
+    if (names.length === 0) return [];
+    const favouriteIds = favouriteIDPs.map((f) => f.id);
+    const marks = (list) => list.map(() => '?').join(', ');
+
+    let sql = `${IDP.SELECT}
+       WHERE i.visibility = 'public'
+         AND (i.style IN (${marks(names)})
+              OR EXISTS (SELECT 1 FROM json_each(i.type) WHERE value IN (${marks(names)})))`;
+    const params = [...names, ...names];
+    if (favouriteIds.length > 0) {
+      sql += ` AND i.id NOT IN (${marks(favouriteIds)})`;
+      params.push(...favouriteIds);
+    }
+    sql += ' ORDER BY i.created_at DESC, i.id DESC';
+    return this.db.prepare(sql).all(...params).map(IDP.fromRow);
+  }
+
   static fromRow(row) {
     return {
       id: row.id,

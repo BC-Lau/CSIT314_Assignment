@@ -47,6 +47,14 @@ CREATE TABLE IF NOT EXISTS contact_request (
     created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
+-- #1 Recommended IDPs using the IDPs a customer saved to their favourites list
+CREATE TABLE IF NOT EXISTS favourite (
+    user_id  INTEGER NOT NULL REFERENCES user_account(id),
+    idp_id   INTEGER NOT NULL REFERENCES idp(id) ON DELETE CASCADE,
+    saved_at TEXT    NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (user_id, idp_id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_idp_designer        ON idp(designer_id);
 CREATE INDEX IF NOT EXISTS idx_contact_created_at  ON contact_request(created_at);
 
