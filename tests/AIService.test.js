@@ -4,7 +4,8 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const AIService = require('../backend/boundary/AIService');
 
-const TAG_NAMES = ['Modern', 'Japanese', 'Kitchen', 'Bedroom'];
+const STYLES = ['Modern', 'Japanese'];
+const TYPES = ['Kitchen', 'Bedroom'];
 
 /** A fake Gemini client that answers with `text` and remembers what it was asked. */
 function fakeClient(text) {
@@ -18,21 +19,33 @@ function fakeClient(text) {
   return client;
 }
 
-test('requestTags sends the description and tag names, and returns the chosen names', async () => {
-  const client = fakeClient('["Japanese", "Bedroom"]');
-  const names = await new AIService('test-key', client).requestTags('A zen bedroom', TAG_NAMES);
+test('requestTags sends the description and preset names, and returns the chosen style and types', async () => {
+  const client = fakeClient('{"style": "Japanese", "types": ["Bedroom"]}');
+  const answer = await new AIService('test-key', client).requestTags('A zen bedroom', STYLES, TYPES);
 
-  assert.deepEqual(names, ['Japanese', 'Bedroom']);
-  assert.match(client.calls[0].contents, /A zen bedroom/);
-  for (const name of TAG_NAMES) assert.match(client.calls[0].contents, new RegExp(name));
+  assert.deepEqual(answer, { style: 'Japanese', types: ['Bedroom'] });
+  const request = client.calls[0];
+  assert.match(request.contents, /A zen bedroom/);
+  // The AI may only answer with preset names (or None when no style fits)
+  assert.deepEqual(request.config.responseJsonSchema.properties.style.enum, [...STYLES, 'None']);
+  assert.deepEqual(request.config.responseJsonSchema.properties.types.items.enum, TYPES);
+});
+
+test('requestTags returns style null when the AI finds no style', async () => {
+  const client = fakeClient('{"style": "None", "types": ["Bedroom"]}');
+  const answer = await new AIService('test-key', client).requestTags('We repainted the bedroom', STYLES, TYPES);
+  assert.deepEqual(answer, { style: null, types: ['Bedroom'] });
 });
 
 test('requestTags fails when there is no API key', async () => {
-  await assert.rejects(new AIService('').requestTags('A zen bedroom', TAG_NAMES), /GEMINI_API_KEY/);
+  await assert.rejects(new AIService('').requestTags('A zen bedroom', STYLES, TYPES), /GEMINI_API_KEY/);
 });
 
-test('requestTags fails when the AI does not answer with a list', async () => {
-  for (const text of ['Sure! Japanese and Bedroom.', '{"tags": ["Japanese"]}']) {
-    await assert.rejects(new AIService('test-key', fakeClient(text)).requestTags('A zen bedroom', TAG_NAMES), `answer: ${text}`);
+test('requestTags fails when the AI answer is not { style, types }', async () => {
+  for (const text of ['Sure! Japanese and Bedroom.', '["Japanese", "Bedroom"]', '{"style": "Japanese"}', '{"style": 1, "types": []}']) {
+    await assert.rejects(
+      new AIService('test-key', fakeClient(text)).requestTags('A zen bedroom', STYLES, TYPES),
+      `answer: ${text}`
+    );
   }
 });

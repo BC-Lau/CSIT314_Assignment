@@ -30,7 +30,7 @@ class HomePage {
     for (const idp of idps) {
       const tags = el('div');
       if (idp.style) tags.append(el('span', { className: 'pill', textContent: idp.style }));
-      for (const r of idp.rooms) tags.append(el('span', { className: 'pill room', textContent: r }));
+      for (const t of idp.type) tags.append(el('span', { className: 'pill type', textContent: t }));
       grid.append(el('article', { className: 'idp-card' },
         el('h3', { textContent: idp.title }),
         el('div', { className: 'meta', textContent: `by ${idp.designerName} · ${money(idp.budget)} · ${idp.duration ?? ''}` }),

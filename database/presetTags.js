@@ -1,48 +1,31 @@
-// Preset tags (from attachment/tags.txt) + keywords used by #23 keyword matching.
-// Edit keywords here, then run `npm run seed` again.
-module.exports = {
-  style: {
-    'Contemporary': ['contemporary', 'current trend', 'sleek'],
-    'Modern': ['modern', 'clean lines', 'open plan'],
-    'Japanese': ['japanese', 'tatami', 'shoji', 'zen'],
-    'Minimalism': ['minimalist', 'minimalism', 'clutter-free', 'simple'],
-    'Scandinavian': ['scandinavian', 'nordic', 'scandi', 'light wood'],
-    'Industrial': ['industrial', 'exposed brick', 'concrete', 'metal'],
-    'Luxury': ['luxury', 'marble', 'gold', 'premium'],
-    'Peranakan': ['peranakan', 'nyonya', 'patterned tiles'],
-    'Persian': ['persian', 'carpet', 'arabesque'],
-    'Japandi': ['japandi', 'japanese scandinavian', 'warm minimal'],
-    'Classical': ['classical', 'moulding', 'chandelier', 'symmetry'],
-    'Eclectic': ['eclectic', 'mix and match', 'colourful'],
-    'Country': ['country', 'farmhouse', 'cottage'],
-    'Rustic': ['rustic', 'reclaimed wood', 'raw timber'],
-    'Wabi Sabi': ['wabi sabi', 'wabi-sabi', 'imperfect', 'earthy'],
-    'Futuristic': ['futuristic', 'smart home', 'led strip', 'high-tech'],
-    'Mid Century': ['mid century', 'mid-century', 'retro', 'tapered legs'],
-    'Bohemian': ['bohemian', 'boho', 'rattan', 'macrame'],
-    'Vintage': ['vintage', 'antique', 'heritage'],
-  },
-  room: {
-    'Living Room': ['living room', 'living area', 'sofa'],
-    'Dining Room': ['dining room', 'dining area', 'dining table'],
-    'Kitchen': ['kitchen', 'cabinets', 'countertop'],
-    'Bedroom': ['bedroom', 'master room', 'wardrobe'],
-    'Bathroom': ['bathroom', 'toilet', 'shower', 'vanity'],
-    'Foyer': ['foyer', 'entrance', 'shoe cabinet'],
-    'Balcony': ['balcony', 'planter'],
-    'Study Room': ['study room', 'study', 'home office', 'work from home'],
-    'TV Console': ['tv console', 'tv wall', 'entertainment unit'],
-    'Kitchen Island': ['kitchen island', 'island counter'],
-    'Altar': ['altar', 'prayer'],
-    'Walk In Wardrobe': ['walk in wardrobe', 'walk-in wardrobe', 'dressing room'],
-    'Service Yard': ['service yard', 'laundry'],
-    'Feature Wall': ['feature wall', 'accent wall'],
-    'Window Seat': ['window seat', 'bay window'],
-    'Kitchen Peninsula': ['kitchen peninsula', 'peninsula'],
-    'Bar Counter': ['bar counter', 'bar', 'wine'],
-    'Platform Bed': ['platform bed', 'raised bed'],
-    'Garden': ['garden', 'landscaping'],
-    'Swimming Pool': ['swimming pool', 'pool'],
-    'Yard': ['yard', 'backyard', 'patio'],
-  },
-};
+// Preset styles / types + keywords used by #23, read from database/tags.txt.
+// The file is read again on every call, so editing tags.txt needs no reseed.
+const fs = require('node:fs');
+const path = require('node:path');
+
+const SECTIONS = { 'Styles:': 'style', 'Types:': 'type', 'Keywords:': 'keywords' };
+
+/** @returns {{ style: Object<string, string[]>, type: Object<string, string[]> }}  name -> keywords */
+function loadPresetTags(filePath = path.join(__dirname, 'tags.txt')) {
+  const preset = { style: {}, type: {} };
+  const keywords = {};
+  let section = null;
+  for (const raw of fs.readFileSync(filePath, 'utf8').split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line || line === 'IDP Tags') continue;
+    if (Object.hasOwn(SECTIONS, line)) {
+      section = SECTIONS[line];
+    } else if (section === 'keywords') {
+      const [name, words = ''] = line.split(/:(.*)/);
+      keywords[name.trim()] = words.split(',').map((w) => w.trim()).filter(Boolean);
+    } else if (section) {
+      preset[section][line] = [];
+    }
+  }
+  for (const names of Object.values(preset)) {
+    for (const name of Object.keys(names)) names[name] = keywords[name] ?? [];
+  }
+  return preset;
+}
+
+module.exports = { loadPresetTags };

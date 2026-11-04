@@ -5,8 +5,8 @@ Use **#13 Create IDP** as the example to copy.
 
 | Step | Layer | File | Example (#13) |
 |---|---|---|---|
-| 1 | Database | `database/schema.sql` | `idp`, `idp_tag` tables |
-| 2 | Entity | `backend/entity/<Name>.js` | `IDP.js`, `Tag.js` |
+| 1 | Database | `database/schema.sql` | `idp` table |
+| 2 | Entity | `backend/entity/<Name>.js` | `IDP.js` |
 | 3 | Test first (TDD) | `tests/<Name>.test.js` | write the test, see it fail |
 | 4 | Controller | `backend/controller/<Action>Controller.js` | `CreateIDPController.js` |
 | 5 | Route | `backend/routes/<area>Routes.js`, registered in `backend/app.js` | `POST /api/idps` |
