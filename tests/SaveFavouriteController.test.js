@@ -102,3 +102,15 @@ test('S-14 a saved IDP feeds Story #1: the customer gets recommendations afterwa
   assert.equal(result.hasFavourites, true);
   assert.deepEqual(sortedIds(result.idps), [2, 5]); // both share Bedroom; IDP 4 itself is not recommended
 });
+
+test('S-16 a customer gets the ids of the IDPs they saved, so the cards can show Saved', () => {
+  const ids = (userId) => controller.getSavedIDPIds(userOf(db, userId)).idpIds.sort((a, b) => a - b);
+  assert.deepEqual(ids(customers.c1), [1, 3]);
+  assert.deepEqual(ids(customers.c2), []);
+});
+
+test('S-17 only a customer can get the saved ids', () => {
+  const refused = { success: false, message: 'Only customers can save favourites' };
+  assert.deepEqual(controller.getSavedIDPIds(userOf(db, designerId)), refused);
+  assert.deepEqual(controller.getSavedIDPIds(null), refused);
+});
