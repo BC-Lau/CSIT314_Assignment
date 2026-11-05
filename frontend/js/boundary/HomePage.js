@@ -17,16 +17,18 @@ class HomePage {
 
   async loadLatestIDPs() {
     const result = await Api.get('/api/idps/latest?limit=12');
-    this.displayIDPs(result.idps ?? []);
+    const showSave = this.account?.profile === 'Customer'; // #6 only Customers can save
+    const saved = showSave ? await loadSavedIDPIds() : new Set();
+    this.displayIDPs(result.idps ?? [], showSave, saved);
   }
 
-  displayIDPs(idps) {
+  displayIDPs(idps, showSave, saved) {
     const grid = document.getElementById('idpGrid');
     grid.textContent = '';
     if (!idps.length) {
       grid.append(el('p', { className: 'muted', textContent: 'No projects yet.' }));
       return;
     }
-    for (const idp of idps) grid.append(drawIDPCard(idp));
+    for (const idp of idps) grid.append(drawIDPCard(idp, { showSave, saved: saved.has(idp.id) }));
   }
 }

@@ -5,6 +5,7 @@ const authRoutes = require('./routes/authRoutes');
 const idpRoutes = require('./routes/idpRoutes');
 const recommendRoutes = require('./routes/recommendRoutes');
 const metricsRoutes = require('./routes/metricsRoutes');
+const favouriteRoutes = require('./routes/favouriteRoutes');
 
 function createApp(db) {
   const app = express();
@@ -15,6 +16,7 @@ function createApp(db) {
   app.use('/api/idps', idpRoutes(db));
   app.use('/api/recommendations', recommendRoutes(db));
   app.use('/api/metrics', metricsRoutes(db));
+  app.use('/api/favourites', favouriteRoutes(db));
 
   app.use('/api', (req, res) => res.status(404).json({ success: false, message: 'Not found' }));
   return app;

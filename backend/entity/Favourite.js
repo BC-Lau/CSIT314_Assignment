@@ -18,6 +18,21 @@ class Favourite {
       .all(userId)
       .map(IDP.fromRow);
   }
+  // Check if this customer already saved this IDP
+  exists(userId, idpId) {
+    const row = this.db
+      .prepare('SELECT 1 FROM favourite WHERE user_id = ? AND idp_id = ?')
+      .get(userId, idpId);
+    return Boolean(row);
+  }
+
+  // Saves the IDP for the customer. Returns false (and adds nothing) if it was already saved
+  addFavourite(userId, idpId) {
+    const result = this.db
+      .prepare('INSERT OR IGNORE INTO favourite (user_id, idp_id) VALUES (?, ?)')
+      .run(userId, idpId);
+    return result.changes === 1;
+  }
 }
 
 module.exports = Favourite;

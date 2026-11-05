@@ -1,4 +1,4 @@
-// Test data for user story #1 and #2
+// Test data for user stories #1, #2 and #6
 
 //   IDP  budget  size  duration   style         types
 //   1    20000    800   3 months   Modern        Kitchen, Living Room
@@ -42,7 +42,7 @@ function buildTestData() {
   return { db, designerId, customers };
 }
 
-// Test setup by inserting directly into favourites as save to favourites is not an implemented user story
+// Test setup: inserts a favourite directly, so tests for #1 do not depend on the #6 save code
 function addFavourite(db, userId, idpId) {
   db.prepare('INSERT INTO favourite (user_id, idp_id) VALUES (?, ?)').run(userId, idpId);
 }

@@ -51,8 +51,9 @@ function addUser(username, profile) {
 addUser('admin', 'User Admin');
 addUser('designer1', 'Interior Designer');
 addUser('customer1', 'Customer');
+addUser('customer2', 'Customer');
 addUser('manager1', 'Platform Manager');
-const used = new Set(['admin', 'designer1', 'customer1', 'manager1']);
+const used = new Set(['admin', 'designer1', 'customer1', 'customer2', 'manager1']);
 function uniqueName(prefix) {
   let name;
   do { name = `${pick(FIRST)}_${prefix}${int(10, 999)}`; } while (used.has(name));
@@ -98,11 +99,12 @@ for (let i = 0; i < COUNTS.contacts; i++) {
     pick(['Hi, can I get a quote?', 'Love this design!', 'Are you available next month?', 'Please contact me.']), daysAgo(90));
 }
 
-// Favourites (#1): customer1 always has some favourites 
+// Favourites (#1): customer1 always has some favourites, 
+// customer2 has none (to demo #6 saving from scratch),
 // and the other customers save 0 to 8 IDPs each.
 const insertFavourite = db.prepare('INSERT OR IGNORE INTO favourite (user_id, idp_id, saved_at) VALUES (?, ?, ?)');
 users.Customer.forEach((customerId, index) => {
-  const howMany = index === 0 ? 6 : int(0, 8);
+  const howMany = index === 0 ? 6 : index === 1 ? 0 : int(0, 8);
   for (const idpId of pickSome(idps, howMany)) insertFavourite.run(customerId, idpId, daysAgo(60));
 });
 
@@ -114,5 +116,5 @@ console.log(`Seeded database/app.db
   idp             ${count('idp')}
   contact_request ${count('contact_request')}
   favourite       ${count('favourite')}
-Demo logins (password: ${PASSWORD}): admin, designer1, customer1, manager1`);
+Demo logins (password: ${PASSWORD}): admin, designer1, customer1, customer2, manager1`);
 db.close();

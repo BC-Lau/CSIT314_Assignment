@@ -71,6 +71,8 @@ input:focus, select:focus, textarea:focus, .btn:focus-visible { outline: 2px sol
 .idp-card .meta { font-size: .85rem; color: var(--muted); }
 a.idp-card { text-decoration: none; color: var(--text); }
 a.idp-card:hover { border-color: var(--accent); }
+.save-row { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 10px; }
+.save-btn { padding: 4px 12px; font-size: .85rem; }
 
 /* ---------- View IDP ---------- */
 .idp-details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
