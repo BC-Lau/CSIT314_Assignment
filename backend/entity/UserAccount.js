@@ -80,6 +80,10 @@ class UserAccount {
   canViewMetrics() {
     return false;
   }
+
+  canSaveFavourite() {
+    return false;
+  }
 }
 
 class InteriorDesigner extends UserAccount {
@@ -98,6 +102,10 @@ class InteriorDesigner extends UserAccount {
 
 class Customer extends UserAccount {
   canViewRecommendations() {
+    return true;
+  }
+
+  canSaveFavourite() {
     return true;
   }
 }
