@@ -17,7 +17,7 @@ class ConnectedCustomersController {
   }
 
   /** Default range: the last 30 days (including today). */
-  getConnectedCustomers(startDate, endDate) {
+  getConnectedCustomers(user, startDate, endDate) {
   }
 }
 

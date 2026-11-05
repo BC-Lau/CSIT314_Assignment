@@ -30,8 +30,14 @@ class ConnectedCustomersController {
     this.getToday = getToday;
   }
 
-  /** Default range: the last 30 days (including today). */
-  getConnectedCustomers(startDate, endDate) {
+  /**
+   * @param {import('../entity/UserAccount') | null} user  the logged-in user (a profile subclass)
+   * Default range: the last 30 days (including today).
+   */
+  getConnectedCustomers(user, startDate, endDate) {
+    if (!user || !user.canViewMetrics()) {
+      return { success: false, message: 'Only platform managers can view metrics' };
+    }
     const today = this.getToday();
     endDate = endDate || today;
     startDate = startDate || addDays(endDate, -29);
