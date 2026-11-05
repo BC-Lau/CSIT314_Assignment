@@ -68,10 +68,18 @@ class UserAccount {
   canViewRecommendations() {
     return false;
   }
+
+  canViewMyIDPs() {
+    return false;
+  }
 }
 
 class InteriorDesigner extends UserAccount {
   canCreateIDP() {
+    return true;
+  }
+
+  canViewMyIDPs() {
     return true;
   }
 }

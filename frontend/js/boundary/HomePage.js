@@ -27,16 +27,6 @@ class HomePage {
       grid.append(el('p', { className: 'muted', textContent: 'No projects yet.' }));
       return;
     }
-    for (const idp of idps) {
-      const tags = el('div');
-      if (idp.style) tags.append(el('span', { className: 'pill', textContent: idp.style }));
-      for (const t of idp.type) tags.append(el('span', { className: 'pill type', textContent: t }));
-      grid.append(el('article', { className: 'idp-card' },
-        el('h3', { textContent: idp.title }),
-        el('div', { className: 'meta', textContent: `by ${idp.designerName} · ${money(idp.budget)} · ${idp.duration ?? ''}` }),
-        tags,
-        el('p', { className: 'meta', textContent: idp.description })
-      ));
-    }
+    for (const idp of idps) grid.append(drawIDPCard(idp));
   }
 }

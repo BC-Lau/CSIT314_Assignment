@@ -59,6 +59,7 @@ input:focus, select:focus, textarea:focus, .btn:focus-visible { outline: 2px sol
 .chip:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
 .pill { display: inline-block; font-size: .78rem; padding: 2px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-dark); margin: 0 4px 4px 0; }
 .pill.type { background: #eef1f5; color: var(--muted); }
+.pill.private { background: #fdecea; color: #a33; }
 
 /* ---------- home page ---------- */
 .hero { padding: 36px 0 28px; }
@@ -68,6 +69,15 @@ input:focus, select:focus, textarea:focus, .btn:focus-visible { outline: 2px sol
 .idp-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 6px; }
 .idp-card h3 { font-size: 1rem; margin: 0; }
 .idp-card .meta { font-size: .85rem; color: var(--muted); }
+a.idp-card { text-decoration: none; color: var(--text); }
+a.idp-card:hover { border-color: var(--accent); }
+
+/* ---------- View IDP ---------- */
+.idp-details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+.idp-details dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 12px 0; }
+.idp-details dt { color: var(--muted); }
+.idp-details dd { margin: 0; }
+.idp-details .description { white-space: pre-wrap; }
 
 /* ---------- dashboard ---------- */
 .options { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-top: 18px; }

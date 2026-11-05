@@ -3,7 +3,7 @@
 const MENU = {
   'Interior Designer': [
     { title: 'Create IDP', text: 'Add a new project to your portfolio (#13)', href: '/idp-create.html', ready: true },
-    { title: 'My IDPs', text: 'View, update and delete your projects (#14, #15)' },
+    { title: 'My IDPs', text: 'View your projects (update / delete: #14, #15)', href: '/my-idps.html', ready: true },
     { title: 'Company information', text: 'Manage your company profile' },
     { title: 'IDP statistics', text: 'Views and favourites of each IDP' },
   ],
