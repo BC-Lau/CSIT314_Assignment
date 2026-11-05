@@ -30,6 +30,13 @@ class SaveFavouriteController {
     this.favourite.addFavourite(user.id, idp.id);
     return { success: true, alreadySaved: false, message: 'Saved to your favourites' };
   }
+   //The ids of the IDPs this customer saved, so the IDP cards can show "Saved" when the page loads
+  getSavedIDPIds(user) {
+    if (!user || !user.canSaveFavourite()) {
+      return { success: false, message: 'Only customers can save favourites' };
+    }
+    return { success: true, idpIds: this.favourite.getFavouriteIDPs(user.id).map((idp) => idp.id) };
+  }
 }
 
 module.exports = SaveFavouriteController;

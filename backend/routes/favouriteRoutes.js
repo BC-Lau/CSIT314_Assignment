@@ -18,6 +18,13 @@ function favouriteRoutes(db) {
     res.status(result.success ? 200 : 400).json(result);
   });
 
+  // The ids of the IDPs the logged-in customer saved
+  router.get('/', (req, res) => {
+    const user = userAccount.findById(req.get('X-User-Id'));
+    const result = controller.getSavedIDPIds(user);
+    res.status(result.success ? 200 : 400).json(result);
+  });
+
   return router;
 }
 
