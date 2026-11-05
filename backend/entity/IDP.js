@@ -1,4 +1,4 @@
-// ENTITY: Interior Design Project. Each IDP has exactly 1 style and 0..* types,
+// ENTITY: Interior Design Project. Each IDP has exactly 1 style and 1..* types,
 // both taken from the preset list in database/tags.txt.
 const { loadPresetTags } = require('../../database/presetTags');
 
@@ -43,6 +43,12 @@ class IDP {
       .prepare(`${IDP.SELECT} WHERE i.designer_id = ? ORDER BY i.created_at DESC, i.id DESC`)
       .all(designerId)
       .map(IDP.fromRow);
+  }
+
+  /** Favourites are removed by ON DELETE CASCADE; contact requests keep their history without the IDP. */
+  deleteIDP(idpId) {
+    this.db.prepare('UPDATE contact_request SET idp_id = NULL WHERE idp_id = ?').run(idpId);
+    this.db.prepare('DELETE FROM idp WHERE id = ?').run(idpId);
   }
 
   getLatestIDPs(limit = 12) {

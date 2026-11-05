@@ -34,12 +34,15 @@ class CreateIDPController {
       }
     }
 
-    // Exactly 1 preset style, 0..* preset types
+    // Exactly 1 preset style, 1..* preset types
     const type = idpData.type ?? [];
     const styleOk = this.idp.getTagsByType('style').includes(idpData.style);
     const presetTypes = this.idp.getTagsByType('type');
     if (!styleOk || !Array.isArray(type) || !type.every((t) => presetTypes.includes(t))) {
       return { success: false, message: 'Invalid tags: need exactly 1 style' };
+    }
+    if (type.length === 0) {
+      return { success: false, message: 'Please choose at least 1 room type' };
     }
 
     const newIDP = this.idp.createIDP(user.id, {

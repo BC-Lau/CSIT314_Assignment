@@ -72,6 +72,10 @@ class UserAccount {
   canViewMyIDPs() {
     return false;
   }
+
+  canDeleteIDP() {
+    return false;
+  }
 }
 
 class InteriorDesigner extends UserAccount {
@@ -80,6 +84,10 @@ class InteriorDesigner extends UserAccount {
   }
 
   canViewMyIDPs() {
+    return true;
+  }
+
+  canDeleteIDP() {
     return true;
   }
 }

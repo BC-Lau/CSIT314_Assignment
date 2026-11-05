@@ -53,8 +53,10 @@ test('interior designer can create an IDP with a style and types', () => {
   assert.deepEqual(idp.getIDPById(result.idp.id).type, ['Kitchen', 'Bedroom']); // read back as a list
 });
 
-test('types are optional and duplicates are removed', () => {
-  assert.deepEqual(controller.createIDP(designer, { ...VALID, type: undefined }).idp.type, []);
+test('at least 1 type is required and duplicates are removed', () => {
+  for (const type of [undefined, []]) {
+    assert.deepEqual(controller.createIDP(designer, { ...VALID, type }), { success: false, message: 'Please choose at least 1 room type' });
+  }
   assert.deepEqual(controller.createIDP(designer, { ...VALID, type: ['Kitchen', 'Kitchen'] }).idp.type, ['Kitchen']);
 });
 

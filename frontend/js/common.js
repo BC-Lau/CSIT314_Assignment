@@ -25,6 +25,7 @@ const Api = {
   },
   get(url) { return this.request('GET', url); },
   post(url, body) { return this.request('POST', url, body ?? {}); },
+  delete(url) { return this.request('DELETE', url); },
 };
 
 const Nav = {

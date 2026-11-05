@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS idp (
     duration    TEXT,                          -- e.g. '12 weeks'
     visibility  TEXT    NOT NULL DEFAULT 'public' CHECK (visibility IN ('public', 'private')),  -- private = hidden from home / recommend pages
     style       TEXT    NOT NULL,              -- exactly 1 preset style
-    type        TEXT    NOT NULL DEFAULT '[]', -- JSON array, 0..* preset types
+    type        TEXT    NOT NULL DEFAULT '[]', -- JSON array, 1..* preset types
     created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 

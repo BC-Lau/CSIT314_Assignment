@@ -6,6 +6,7 @@ const BrowseIDPController = require('../controller/BrowseIDPController');
 const SuggestTagsController = require('../controller/SuggestTagsController');
 const ViewIDPController = require('../controller/ViewIDPController');
 const ViewMyIDPsController = require('../controller/ViewMyIDPsController');
+const DeleteIDPController = require('../controller/DeleteIDPController');
 const AIService = require('../boundary/AIService');
 
 function idpRoutes(db, { aiService = new AIService() } = {}) {
@@ -17,6 +18,7 @@ function idpRoutes(db, { aiService = new AIService() } = {}) {
   const suggestTagsController = new SuggestTagsController(idp, aiService);
   const viewIDPController = new ViewIDPController(idp);
   const viewMyIDPsController = new ViewMyIDPsController(idp);
+  const deleteIDPController = new DeleteIDPController(idp);
 
   // Public: latest IDPs for the home page
   router.get('/latest', (req, res) => {
@@ -52,6 +54,13 @@ function idpRoutes(db, { aiService = new AIService() } = {}) {
     const user = userAccount.findById(req.get('X-User-Id'));
     const result = viewIDPController.viewIDP(user, req.params.id);
     res.status(result.success ? 200 : 404).json(result);
+  });
+
+  // Delete my IDP (from the My IDPs page)
+  router.delete('/:id', (req, res) => {
+    const user = userAccount.findById(req.get('X-User-Id'));
+    const result = deleteIDPController.deleteIDP(user, req.params.id);
+    res.status(result.success ? 200 : 403).json(result);
   });
 
   return router;

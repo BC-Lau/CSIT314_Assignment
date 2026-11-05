@@ -1,5 +1,5 @@
 // BOUNDARY: My IDPs page (Interior Designers) - list of the designer's own IDPs.
-// Calls /api/idps/mine
+// Calls /api/idps/mine, DELETE /api/idps/:id
 class MyIDPsPage {
   async init() {
     this.account = await Nav.render();
@@ -18,7 +18,18 @@ class MyIDPsPage {
   displayIDPs(idps) {
     const grid = document.getElementById('results');
     grid.textContent = '';
-    for (const idp of idps) grid.append(drawIDPCard(idp));
+    for (const idp of idps) {
+      const deleteBtn = el('button', { className: 'btn secondary', textContent: 'Delete' });
+      deleteBtn.addEventListener('click', () => this.clickDeleteIDP(idp));
+      grid.append(el('div', {}, drawIDPCard(idp), deleteBtn));
+    }
+  }
+
+  async clickDeleteIDP(idp) {
+    if (!confirm(`Delete "${idp.title}"? This cannot be undone.`)) return;
+    const result = await Api.delete(`/api/idps/${idp.id}`);
+    if (!result.success) return alert(result.message ?? 'Could not delete the IDP');
+    await this.openMyIDPs();
   }
 
   displayMessage(text) {
