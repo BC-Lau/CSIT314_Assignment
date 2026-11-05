@@ -1,0 +1,24 @@
+// Routes for #6 Save IDP to favourites
+
+const express = require('express');
+const IDP = require('../entity/IDP');
+const Favourite = require('../entity/Favourite');
+const UserAccount = require('../entity/UserAccount');
+const SaveFavouriteController = require('../controller/SaveFavouriteController');
+
+function favouriteRoutes(db) {
+  const router = express.Router();
+  const userAccount = new UserAccount(db);
+  const controller = new SaveFavouriteController(new Favourite(db), new IDP(db));
+
+  // Save an IDP to the logged-in customer's favourites
+  router.post('/:idpId', (req, res) => {
+    const user = userAccount.findById(req.get('X-User-Id'));
+    const result = controller.saveFavourite(user, req.params.idpId);
+    res.status(result.success ? 200 : 400).json(result);
+  });
+
+  return router;
+}
+
+module.exports = favouriteRoutes;
