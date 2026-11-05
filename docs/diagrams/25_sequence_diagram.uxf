@@ -191,7 +191,7 @@ _:MetricsPage_</panel_attributes>
       <h>60</h>
     </coordinates>
     <panel_attributes>&lt;&lt;control&gt;&gt;
-_:ViewConnectedCustomersController_</panel_attributes>
+_:ConnectedCustomersController_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

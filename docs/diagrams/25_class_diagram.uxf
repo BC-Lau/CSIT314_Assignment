@@ -38,7 +38,7 @@ MetricsPage
       <h>56</h>
     </coordinates>
     <panel_attributes>&lt;&lt;control&gt;&gt;
-ViewConnectedCustomersController
+ConnectedCustomersController
 --
 + getConnectedCustomers(startDate: Date, endDate: Date): Metrics</panel_attributes>
     <additional_attributes/>
