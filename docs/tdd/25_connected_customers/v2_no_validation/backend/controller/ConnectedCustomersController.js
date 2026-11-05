@@ -26,7 +26,7 @@ class ConnectedCustomersController {
   }
 
   /** Default range: the last 30 days (including today). */
-  getConnectedCustomers(startDate, endDate) {
+  getConnectedCustomers(user, startDate, endDate) {
     const today = this.getToday();
     endDate = endDate || today;
     startDate = startDate || addDays(endDate, -29);

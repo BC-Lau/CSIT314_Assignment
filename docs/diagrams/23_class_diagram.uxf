@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="15.1">
-  <zoom_level>7</zoom_level>
+  <zoom_level>8</zoom_level>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>119</x>
-      <y>63</y>
-      <w>294</w>
-      <h>21</h>
+      <x>144</x>
+      <y>0</y>
+      <w>336</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>#23 Class Diagram - Automated IDP Tagging (B-C-E)
 bg=white</panel_attributes>
@@ -16,134 +16,118 @@ bg=white</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>133</x>
-      <y>105</y>
-      <w>245</w>
-      <h>98</h>
+      <x>160</x>
+      <y>48</y>
+      <w>448</w>
+      <h>152</h>
     </coordinates>
     <panel_attributes>&lt;&lt;boundary&gt;&gt;
 IDPFormPage
 --
+
+--
 + clickSuggestTags(): void
-+ displaySuggestedTags(tags: Tag[]): void
-+ removeTag(tag: Tag): void
-+ addTag(tag: Tag): void
++ displaySuggestedTags(styleTag: string, typeTags: string[]): void
++ replaceStyle(tag: string): void
++ removeTypeTag(tag: string): void
++ addTag(tag: string): void
++ refreshTagList(): void
 + displayError(message: string): void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>133</x>
-      <y>287</y>
-      <w>245</w>
-      <h>49</h>
+      <x>160</x>
+      <y>272</y>
+      <w>336</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>&lt;&lt;control&gt;&gt;
 SuggestTagsController
 --
-+ suggestTags(description: string): Tag[]</panel_attributes>
+
+--
++ suggestTags(description: string): SuggestedTags
+- keepOneStyle(tags: string[]): SuggestedTags</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>91</x>
-      <y>406</y>
-      <w>378</w>
-      <h>77</h>
+      <x>160</x>
+      <y>400</y>
+      <w>376</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>&lt;&lt;boundary&gt;&gt;
 AIService
 --
 - apiKey: string
 --
-+ requestTags(description: string, tagNames: string[]): string[]</panel_attributes>
++ requestTags(description: string, styleNames: string[],
+    typeNames: string[]): {style, types}</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>504</x>
-      <y>273</y>
-      <w>273</w>
-      <h>133</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;entity&gt;&gt;
-Tag
---
-- tagId: int
-- name: string
-- type: string
-- keywords: string[]
---
-+ getAllTags(): Tag[]
-+ findByNames(names: string[]): Tag[]
-+ matchByKeywords(description: string): Tag[]</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>567</x>
-      <y>105</y>
-      <w>140</w>
-      <h>84</h>
+      <x>712</x>
+      <y>184</y>
+      <w>336</w>
+      <h>280</h>
     </coordinates>
     <panel_attributes>&lt;&lt;entity&gt;&gt;
 IDP
 --
 - idpId: int
+- designerId: int
 - title: string
 - description: string
-- designerId: int</panel_attributes>
+- budget: number
+- houseSize: number
+- duration: string
+- visibility: string  (public | private)
+- style: string  (exactly 1 preset value)
+- type: string[]  (1..* preset values)
+- createdAt: Date
+--
++ getTagsByType(category: string): string[]
++ findByNames(names: string[]): string[]
++ matchByKeywords(description: string): string[]</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>245</x>
-      <y>196</y>
-      <w>21</w>
-      <h>105</h>
+      <x>336</x>
+      <y>192</y>
+      <w>24</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;127.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;95.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>252</x>
-      <y>329</y>
-      <w>28</w>
-      <h>91</h>
+      <x>328</x>
+      <y>352</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>20.0;10.0;17.0;111.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;55.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>371</x>
-      <y>308</y>
-      <w>147</w>
-      <h>28</h>
+      <x>488</x>
+      <y>296</y>
+      <w>240</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;20.0;190.0;17.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>623</x>
-      <y>182</y>
-      <w>91</w>
-      <h>112</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=0..*
-m2=0..*
-tagged with &gt;</panel_attributes>
-    <additional_attributes>20.0;10.0;17.0;133.0</additional_attributes>
+    <additional_attributes>10.0;10.0;280.0;10.0</additional_attributes>
   </element>
 </diagram>

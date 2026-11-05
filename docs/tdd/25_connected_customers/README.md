@@ -1,23 +1,24 @@
 # TDD steps for #25 Connected Customers Metric
 
-Tests: `tests/ContactRequest.test.js`, `tests/ConnectedCustomersController.test.js` (13 tests).
+Tests: `tests/ContactRequest.test.js`, `tests/ConnectedCustomersController.test.js` (14 tests).
 Code under test (2 files):
 
 - `backend/entity/ContactRequest.js`: `countConnectedCustomers(startDate, endDate)`, `countByDesigner(startDate, endDate)`
-- `backend/controller/ConnectedCustomersController.js`: `getConnectedCustomers(startDate, endDate)` ("today" is injected, tests fix it to 2026-03-31)
+- `backend/controller/ConnectedCustomersController.js`: `getConnectedCustomers(user, startDate, endDate)` (only a Platform Manager, checked with `user.canViewMetrics()`; "today" is injected, tests fix it to 2026-03-31)
 
 The real code is **v3**. Each folder below is a copy of the same two files at one TDD step.
 
 | Version | What it has | Result |
 |---|---|---|
-| `v1_no_function` | classes and methods exist, bodies are empty | 0 pass / 13 fail |
-| `v2_no_validation` | entity queries + main flow (default 30 days, totals, "No contacts" message), no date checks | 10 pass / 3 fail |
-| `v3_final` | everything, including the date checks | 13 pass / 0 fail |
+| `v1_no_function` | classes and methods exist, bodies are empty | 0 pass / 14 fail |
+| `v2_no_validation` | entity queries + main flow (default 30 days, totals, "No contacts" message), no permission or date checks | 10 pass / 4 fail |
+| `v3_final` | everything, including the permission and date checks | 14 pass / 0 fail |
 
-The 3 tests that fail in v2 are the invalid data cases:
+The 4 tests that fail in v2 are the invalid data / invalid user cases:
 
 | Invalid data | Test |
 |---|---|
+| user is not a Platform Manager (`null`, designer, customer) | `only a Platform Manager can view the metric` |
 | start date after end date | `rejects a start date after the end date` |
 | end date in the future | `counts only up to today when the end date is in the future` |
 | not a real `YYYY-MM-DD` date (`abc`, `2026/03/01`, `2026-02-30`) | `rejects dates that are not real YYYY-MM-DD dates` |

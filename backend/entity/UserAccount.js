@@ -76,6 +76,10 @@ class UserAccount {
   canDeleteIDP() {
     return false;
   }
+
+  canViewMetrics() {
+    return false;
+  }
 }
 
 class InteriorDesigner extends UserAccount {
@@ -98,7 +102,11 @@ class Customer extends UserAccount {
   }
 }
 
-class PlatformManager extends UserAccount {}
+class PlatformManager extends UserAccount {
+  canViewMetrics() {
+    return true;
+  }
+}
 
 class UserAdmin extends UserAccount {}
 

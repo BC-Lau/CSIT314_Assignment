@@ -1,4 +1,4 @@
-// ENTITY: Interior Design Project. Each IDP has exactly 1 style and 0..* types,
+// ENTITY: Interior Design Project. Each IDP has exactly 1 style and 1..* types,
 // both taken from the preset list in database/tags.txt.
 const { loadPresetTags } = require('../../database/presetTags');
 
@@ -45,6 +45,12 @@ class IDP {
       .map(IDP.fromRow);
   }
 
+  /** Favourites are removed by ON DELETE CASCADE; contact requests keep their history without the IDP. */
+  deleteIDP(idpId) {
+    this.db.prepare('UPDATE contact_request SET idp_id = NULL WHERE idp_id = ?').run(idpId);
+    this.db.prepare('DELETE FROM idp WHERE id = ?').run(idpId);
+  }
+
   getLatestIDPs(limit = 12) {
     return this.db
       .prepare(`${IDP.SELECT} WHERE i.visibility = 'public' ORDER BY i.created_at DESC, i.id DESC LIMIT ?`)
@@ -84,6 +90,29 @@ class IDP {
       .filter((m) => m.hits > 0)
       .sort((a, b) => b.hits - a.hits || a.name.localeCompare(b.name))
       .map((m) => m.name);
+  }
+
+  /**
+   * #1 Recommended IDPs. Public IDPs that share at least one style or type name with
+   * tagPreferences (a Map of name -> count), excluding IDPs already in customer's favourites.
+   */
+  findSimilarIDPs(tagPreferences, favouriteIDPs) {
+    const names = [...tagPreferences.keys()];
+    if (names.length === 0) return [];
+    const favouriteIds = favouriteIDPs.map((f) => f.id);
+    const marks = (list) => list.map(() => '?').join(', ');
+
+    let sql = `${IDP.SELECT}
+       WHERE i.visibility = 'public'
+         AND (i.style IN (${marks(names)})
+              OR EXISTS (SELECT 1 FROM json_each(i.type) WHERE value IN (${marks(names)})))`;
+    const params = [...names, ...names];
+    if (favouriteIds.length > 0) {
+      sql += ` AND i.id NOT IN (${marks(favouriteIds)})`;
+      params.push(...favouriteIds);
+    }
+    sql += ' ORDER BY i.created_at DESC, i.id DESC';
+    return this.db.prepare(sql).all(...params).map(IDP.fromRow);
   }
 
   static fromRow(row) {
