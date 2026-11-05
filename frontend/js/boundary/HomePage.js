@@ -27,6 +27,7 @@ class HomePage {
       grid.append(el('p', { className: 'muted', textContent: 'No projects yet.' }));
       return;
     }
-    for (const idp of idps) grid.append(drawIDPCard(idp));
+    const showSave = this.account?.profile === 'Customer'; // #6 only Customers can save
+    for (const idp of idps) grid.append(drawIDPCard(idp, { showSave }));
   }
 }
