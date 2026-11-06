@@ -27,6 +27,7 @@ Demo accounts (password `password123`): `designer1`, `customer1`, `manager1`, `a
 | Create IDP | `frontend/idp-create.html` | Interior Designer |
 | Recommended IDPs (#1) | `frontend/recommendations.html` | Customer |
 | Save IDP to favourites (#6) | Save button on IDP cards (home page, Recommended IDPs) | Customer |
+| My favourites (#7) | `frontend/my-favourites.html` | Customer |
 
 ## Folder structure
 ```

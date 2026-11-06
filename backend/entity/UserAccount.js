@@ -88,6 +88,10 @@ class UserAccount {
   canSaveFavourite() {
     return false;
   }
+
+  canViewFavourites() {
+    return false;
+  }
 }
 
 class InteriorDesigner extends UserAccount {
@@ -113,6 +117,10 @@ class Customer extends UserAccount {
   }
 
   canSaveFavourite() {
+    return true;
+  }
+
+  canViewFavourites() {
     return true;
   }
 }
