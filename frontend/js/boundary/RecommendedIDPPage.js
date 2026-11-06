@@ -19,7 +19,7 @@ class RecommendedIDPPage {
   displayRecommendations(idps) {
     const grid = document.getElementById('results');
     grid.textContent = '';
-    for (const idp of idps) grid.append(drawIDPCard(idp));
+    for (const idp of idps) grid.append(drawIDPCard(idp, { showSave: true })); // #6 only customers can save
   }
 
   displayNoFavouritesPrompt() {

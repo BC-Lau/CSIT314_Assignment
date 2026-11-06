@@ -16,7 +16,7 @@ const MENU = {
     { title: 'Contact a designer', text: 'Discuss your renovation ideas' },
   ],
   'Platform Manager': [
-    { title: 'Connected customers', text: 'Customers who contacted designers (#25)' },
+    { title: 'Connected customers', text: 'Customers who contacted designers (#25)', href: '/metrics.html', ready: true },
     { title: 'Reports', text: 'Daily, weekly and monthly reports' },
     { title: 'IDP categories', text: 'Manage the preset tags' },
   ],

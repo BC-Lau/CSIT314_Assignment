@@ -14,152 +14,6 @@ bg=white</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>280</x>
-      <y>230</y>
-      <w>760</w>
-      <h>410</h>
-    </coordinates>
-    <panel_attributes>alt [startDate is after endDate]
-halign=left
-valign=top</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>270</x>
-      <y>330</y>
-      <w>790</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=.
-[valid date range]</panel_attributes>
-    <additional_attributes>10.0;20.0;770.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>70</x>
-      <y>130</y>
-      <w>30</w>
-      <h>610</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;590.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>360</x>
-      <y>120</y>
-      <w>30</w>
-      <h>620</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;600.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>650</x>
-      <y>120</y>
-      <w>30</w>
-      <h>620</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;600.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>940</x>
-      <y>120</y>
-      <w>30</w>
-      <h>620</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;600.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>650</x>
-      <y>200</y>
-      <w>20</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>bg=white</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>370</x>
-      <y>320</y>
-      <w>20</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>bg=white</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>940</x>
-      <y>390</y>
-      <w>20</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>bg=white</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>940</x>
-      <y>470</y>
-      <w>20</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>bg=white</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>650</x>
-      <y>390</y>
-      <w>20</w>
-      <h>160</h>
-    </coordinates>
-    <panel_attributes>bg=white</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>370</x>
-      <y>600</y>
-      <w>20</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>bg=white</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>360</x>
-      <y>160</y>
-      <w>20</w>
-      <h>500</h>
-    </coordinates>
-    <panel_attributes>bg=white</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <id>UMLActor</id>
     <coordinates>
       <x>0</x>
@@ -173,7 +27,7 @@ valign=top</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>290</x>
+      <x>295</x>
       <y>70</y>
       <w>150</w>
       <h>60</h>
@@ -185,25 +39,147 @@ _:MetricsPage_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>500</x>
+      <x>495</x>
       <y>70</y>
-      <w>310</w>
+      <w>330</w>
       <h>60</h>
     </coordinates>
     <panel_attributes>&lt;&lt;control&gt;&gt;
-_:ViewConnectedCustomersController_</panel_attributes>
+_:ConnectedCustomersController_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>870</x>
+      <x>885</x>
+      <y>70</y>
+      <w>150</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
+_:UserAccount_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1110</x>
       <y>70</y>
       <w>160</w>
       <h>60</h>
     </coordinates>
     <panel_attributes>&lt;&lt;entity&gt;&gt;
 _:ContactRequest_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>70</x>
+      <y>130</y>
+      <w>30</w>
+      <h>1020</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1000.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>120</y>
+      <w>30</w>
+      <h>1030</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1010.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>650</x>
+      <y>120</y>
+      <w>30</w>
+      <h>1030</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1010.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>950</x>
+      <y>120</y>
+      <w>30</w>
+      <h>1030</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1010.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1180</x>
+      <y>120</y>
+      <w>30</w>
+      <h>1030</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1010.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>150</y>
+      <w>20</w>
+      <h>960</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>650</x>
+      <y>190</y>
+      <w>20</w>
+      <h>710</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>950</x>
+      <y>230</y>
+      <w>20</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1180</x>
+      <y>700</y>
+      <w>20</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1180</x>
+      <y>780</y>
+      <w>20</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -227,14 +203,145 @@ selectDateRange(startDate, endDate)</panel_attributes>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
-getConnectedCustomers(startDate, endDate)</panel_attributes>
+getConnectedCustomers(user, startDate, endDate)</panel_attributes>
     <additional_attributes>10.0;20.0;280.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
+      <x>660</x>
+      <y>220</y>
+      <w>310</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+canViewMetrics()</panel_attributes>
+    <additional_attributes>10.0;20.0;290.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>660</x>
+      <y>260</y>
+      <w>310</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+allowed</panel_attributes>
+    <additional_attributes>290.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>150</x>
+      <y>310</y>
+      <w>1150</w>
+      <h>770</h>
+    </coordinates>
+    <panel_attributes>alt [user is not a Platform Manager]
+halign=left
+valign=top</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
       <x>370</x>
-      <y>250</y>
+      <y>330</y>
+      <w>300</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+error("Only platform managers can view metrics")</panel_attributes>
+    <additional_attributes>280.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>350</x>
+      <y>370</y>
+      <w>260</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+displayError(message)</panel_attributes>
+    <additional_attributes>30.0;20.0;70.0;20.0;70.0;40.0;46.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>400</y>
+      <w>20</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>140</x>
+      <y>420</y>
+      <w>1180</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=.
+[a date is not in YYYY-MM-DD format]</panel_attributes>
+    <additional_attributes>10.0;20.0;1160.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>370</x>
+      <y>460</y>
+      <w>300</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+error("Dates must be in YYYY-MM-DD format")</panel_attributes>
+    <additional_attributes>280.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>350</x>
+      <y>500</y>
+      <w>260</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+displayError(message)</panel_attributes>
+    <additional_attributes>30.0;20.0;70.0;20.0;70.0;40.0;46.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>530</y>
+      <w>20</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>140</x>
+      <y>550</y>
+      <w>1180</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=.
+[startDate is after endDate]</panel_attributes>
+    <additional_attributes>10.0;20.0;1160.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>370</x>
+      <y>590</y>
       <w>300</w>
       <h>40</h>
     </coordinates>
@@ -246,8 +353,8 @@ error("Start date must be before end date")</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>350</x>
-      <y>290</y>
-      <w>160</w>
+      <y>630</y>
+      <w>260</w>
       <h>60</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
@@ -255,58 +362,95 @@ displayError(message)</panel_attributes>
     <additional_attributes>30.0;20.0;70.0;20.0;70.0;40.0;46.0;40.0</additional_attributes>
   </element>
   <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>660</y>
+      <w>20</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
     <id>Relation</id>
     <coordinates>
-      <x>650</x>
-      <y>370</y>
-      <w>320</w>
+      <x>140</x>
+      <y>680</y>
+      <w>1180</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=.
+[valid date range]</panel_attributes>
+    <additional_attributes>10.0;20.0;1160.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>410</x>
+      <y>716</y>
+      <w>220</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>no dates = last 30 days;
+end date in the future
+= counted up to today
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>660</x>
+      <y>710</y>
+      <w>540</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 countConnectedCustomers(startDate, endDate)</panel_attributes>
-    <additional_attributes>20.0;20.0;290.0;20.0</additional_attributes>
+    <additional_attributes>10.0;20.0;520.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>660</x>
-      <y>410</y>
-      <w>300</w>
+      <y>740</y>
+      <w>540</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 total</panel_attributes>
-    <additional_attributes>280.0;20.0;10.0;20.0</additional_attributes>
+    <additional_attributes>520.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>660</x>
-      <y>450</y>
-      <w>300</w>
+      <y>790</y>
+      <w>540</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 countByDesigner(startDate, endDate)</panel_attributes>
-    <additional_attributes>10.0;20.0;280.0;20.0</additional_attributes>
+    <additional_attributes>10.0;20.0;520.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>660</x>
-      <y>490</y>
-      <w>300</w>
+      <y>820</y>
+      <w>540</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 designerBreakdown</panel_attributes>
-    <additional_attributes>280.0;20.0;10.0;20.0</additional_attributes>
+    <additional_attributes>520.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>370</x>
-      <y>530</y>
+      <y>860</y>
       <w>300</w>
       <h>40</h>
     </coordinates>
@@ -315,26 +459,111 @@ metrics</panel_attributes>
     <additional_attributes>280.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>170</x>
+      <y>900</y>
+      <w>700</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>alt [total = 0]
+halign=left
+valign=top</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
     <id>Relation</id>
     <coordinates>
-      <x>300</x>
-      <y>570</y>
-      <w>250</w>
+      <x>350</x>
+      <y>920</y>
+      <w>260</w>
       <h>60</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 displayConnectedCustomers(metrics)</panel_attributes>
-    <additional_attributes>80.0;20.0;120.0;20.0;120.0;40.0;96.0;40.0</additional_attributes>
+    <additional_attributes>30.0;20.0;70.0;20.0;70.0;40.0;46.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>950</y>
+      <w>20</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>640</x>
+      <y>920</y>
+      <w>250</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>shows 0 and
+"No contacts in this period"
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>160</x>
+      <y>970</y>
+      <w>730</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=.
+[total &gt; 0]</panel_attributes>
+    <additional_attributes>10.0;20.0;710.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>350</x>
+      <y>1000</y>
+      <w>260</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+displayConnectedCustomers(metrics)</panel_attributes>
+    <additional_attributes>30.0;20.0;70.0;20.0;70.0;40.0;46.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>1030</y>
+      <w>20</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>640</x>
+      <y>1000</y>
+      <w>250</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>shows the total and
+the per-designer list
+bg=yellow</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>80</x>
-      <y>650</y>
+      <y>1085</y>
       <w>300</w>
-      <h>30</h>
+      <h>40</h>
     </coordinates>
     <panel_attributes>lt=.&gt;</panel_attributes>
-    <additional_attributes>280.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>280.0;20.0;10.0;20.0</additional_attributes>
   </element>
 </diagram>

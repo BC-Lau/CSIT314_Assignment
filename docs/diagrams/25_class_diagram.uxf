@@ -34,13 +34,13 @@ MetricsPage
     <coordinates>
       <x>112</x>
       <y>256</y>
-      <w>432</w>
+      <w>496</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>&lt;&lt;control&gt;&gt;
-ViewConnectedCustomersController
+ConnectedCustomersController
 --
-+ getConnectedCustomers(startDate: Date, endDate: Date): Metrics</panel_attributes>
++ getConnectedCustomers(user: UserAccount, startDate: Date, endDate: Date): Metrics</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -68,15 +68,17 @@ ContactRequest
     <coordinates>
       <x>656</x>
       <y>408</y>
-      <w>160</w>
-      <h>88</h>
+      <w>192</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>&lt;&lt;entity&gt;&gt;
 UserAccount
 --
 - userId: int
 - username: string
-- profile: string</panel_attributes>
+- profile: string
+--
++ canViewMetrics(): boolean</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -128,5 +130,41 @@ m1=0..*
 m2=1
 designer receives &lt;</panel_attributes>
     <additional_attributes>10.0;20.0;140.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>656</x>
+      <y>584</y>
+      <w>192</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
+PlatformManager
+--
++ canViewMetrics(): boolean</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>736</x>
+      <y>512</y>
+      <w>32</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>600</x>
+      <y>272</y>
+      <w>160</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;170.0;170.0</additional_attributes>
   </element>
 </diagram>

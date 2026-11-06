@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connected customers · InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <p><a href="/dashboard.html">← Back to dashboard</a></p>
+    <h1>Connected customers</h1>
+    <p class="muted">How many different customers contacted at least one interior designer in the chosen period (#25).</p>
+
+    <form id="rangeForm" class="card form-page">
+      <div class="row">
+        <div>
+          <label for="startDate">Start date</label>
+          <input type="date" id="startDate">
+        </div>
+        <div>
+          <label for="endDate">End date</label>
+          <input type="date" id="endDate">
+        </div>
+      </div>
+      <p style="margin-top:16px"><button type="submit" class="btn">Show</button></p>
+      <div id="message" hidden></div>
+    </form>
+
+    <section id="results" class="card" style="margin-top:20px" hidden>
+      <p class="muted" id="period"></p>
+      <p class="metric-total"><strong id="total"></strong> connected customers</p>
+      <table class="metric-table">
+        <thead><tr><th>Interior designer</th><th>Customers</th></tr></thead>
+        <tbody id="byDesigner"></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/MetricsPage.js"></script>
+  <script>new MetricsPage().init();</script>
+</body></html>

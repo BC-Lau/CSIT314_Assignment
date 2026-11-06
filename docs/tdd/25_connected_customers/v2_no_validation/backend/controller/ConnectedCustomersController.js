@@ -1,0 +1,42 @@
+// CONTROLLER: #25 "As a Platform Manager, I want to see how many customers connected with designers".
+// Boundary (MetricsPage) -> ConnectedCustomersController -> ContactRequest (entity)
+// Dates are 'YYYY-MM-DD' strings; both ends of the range are inclusive.
+
+/** Today's local date as 'YYYY-MM-DD'. */
+function todayString() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** 'YYYY-MM-DD' plus n days (n can be negative). */
+function addDays(date, n) {
+  const d = new Date(`${date}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+class ConnectedCustomersController {
+  /**
+   * @param {import('../entity/ContactRequest')} contactRequest
+   * @param {() => string} getToday  injected so tests can fix "today"
+   */
+  constructor(contactRequest, getToday = todayString) {
+    this.contactRequest = contactRequest;
+    this.getToday = getToday;
+  }
+
+  /** Default range: the last 30 days (including today). */
+  getConnectedCustomers(user, startDate, endDate) {
+    const today = this.getToday();
+    endDate = endDate || today;
+    startDate = startDate || addDays(endDate, -29);
+
+    const total = this.contactRequest.countConnectedCustomers(startDate, endDate);
+    const byDesigner = this.contactRequest.countByDesigner(startDate, endDate);
+    const result = { success: true, startDate, endDate, total, byDesigner };
+    if (total === 0) result.message = 'No contacts in this period';
+    return result;
+  }
+}
+
+module.exports = ConnectedCustomersController;
