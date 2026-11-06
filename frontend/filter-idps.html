@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Filter IDPs · InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/jeng-features.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <p><a href="/dashboard.html">← Back to dashboard</a></p>
+    <div class="card">
+      <h1>Filter IDPs</h1>
+      <p class="muted">Leave a box empty to ignore it.</p>
+      <form id="filterForm">
+        <div class="row">
+          <div><label for="minBudget">Min budget (S$)</label><input id="minBudget" type="number" min="0" step="1000"></div>
+          <div><label for="maxBudget">Max budget (S$)</label><input id="maxBudget" type="number" min="0" step="1000"></div>
+          <div><label for="minHouseSize">Min house size (sq ft)</label><input id="minHouseSize" type="number" min="0"></div>
+          <div><label for="maxHouseSize">Max house size (sq ft)</label><input id="maxHouseSize" type="number" min="0"></div>
+        </div>
+        <div class="row">
+          <div><label for="duration">Duration</label><input id="duration" placeholder="e.g. 12 weeks"></div>
+          <div><label for="styleTag">Design style</label><select id="styleTag"></select></div>
+        </div>
+        <p><button class="btn" type="submit">Filter</button></p>
+      </form>
+      <p id="message"></p>
+    </div>
+    <h2>Results <span id="count" class="muted"></span></h2>
+    <div id="results" class="grid"></div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/idpCard.js"></script>
+  <script src="/js/boundary/FilterIDPPage.js"></script>
+<script src="/js/boundary/IDPGalleryEnhancer.js"></script>
+  <script>new FilterIDPPage().init();</script>
+</body></html>
