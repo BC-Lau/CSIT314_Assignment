@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IDP media · InteriorMatch</title><link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/jeng-features.css">
+</head><body><nav id="nav"></nav><main class="form-page">
+<p><a href="/dashboard.html">← Back to dashboard</a></p><div class="card">
+<h1>Upload project media</h1><p class="muted">Showcase your interior design projects with photos or short videos.</p>
+<form id="mediaForm">
+<label for="idpSelect">Interior design project</label><select id="idpSelect" required></select>
+<label for="mediaFile">Image or video</label><input type="file" id="mediaFile" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm" required>
+<p class="muted">JPEG, PNG, GIF, WebP (max 5 MB); MP4 and WebM (max 8 MB).</p>
+<button id="uploadBtn" class="btn" type="submit">Upload media</button>
+</form><p id="message" role="status" aria-live="polite"></p>
+<hr><h2 class="section-heading">Uploaded media</h2><div id="mediaGrid" class="media-grid"></div>
+</div></main>
+<script src="/js/common.js"></script>
+<script src="/js/boundary/IDPMediaPage.js"></script>
+<script>new IDPMediaPage().init();</script>
+</body></html>

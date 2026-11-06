@@ -129,12 +129,14 @@ class IDP {
       style: row.style,
       type: JSON.parse(row.type),
       createdAt: row.created_at,
+      coverMediaId: row.cover_media_id,
     };
   }
 }
 
 IDP.SELECT = `
-  SELECT i.*, a.username AS designer_name
+  SELECT i.*, a.username AS designer_name,
+    (SELECT m.id FROM idp_media m WHERE m.idp_id = i.id AND m.mime_type LIKE 'image/%' ORDER BY m.id LIMIT 1) AS cover_media_id
     FROM idp i
     JOIN user_account a ON a.id = i.designer_id`;
 

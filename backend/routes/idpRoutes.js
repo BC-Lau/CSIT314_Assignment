@@ -25,6 +25,15 @@ function idpRoutes(db, { aiService = new AIService() } = {}) {
     res.json({ success: true, idps: browseIDPController.getLatestIDPs(req.query.limit) });
   });
 
+  // #24 Select only the current designer's projects for uploading media.
+  router.get('/mine', (req, res) => {
+    const user = userAccount.findById(req.get('X-User-Id'));
+    if (!user || !user.canUploadIDPMedia()) {
+      return res.status(403).json({ success: false, message: 'Only designers can view their projects' });
+    }
+    return res.json({ success: true, idps: idp.getIDPsByDesigner(user.id) });
+  });
+
   // #13 Create IDP
   router.get('/tag-options', (req, res) => {
     res.json({ success: true, ...createIDPController.getTagOptions() });
