@@ -1,0 +1,20 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor "Interior Designer" as Designer
+actor "Customer" as Customer
+rectangle "InteriorMatch — IDP Visual Media" {
+  usecase "Upload Visual Media" as Upload
+  usecase "View IDP Media" as View
+  usecase "Remove Uploaded Media" as Delete
+  usecase "Validate Media File" as Validate
+  usecase "Verify IDP Ownership" as Ownership
+}
+Designer -- Upload
+Designer -- View
+Designer -- Delete
+Customer -- View
+Upload ..> Validate : <<include>>
+Upload ..> Ownership : <<include>>
+Delete ..> Ownership : <<include>>
+@enduml

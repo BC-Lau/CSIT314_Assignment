@@ -6,6 +6,7 @@ const MENU = {
     { title: 'My IDPs', text: 'View your projects (update / delete: #14, #15)', href: '/my-idps.html', ready: true },
     { title: 'Company information', text: 'Manage your company profile' },
     { title: 'IDP statistics', text: 'Views and favourites of each IDP' },
+    { title: 'Upload project media', text: 'Showcase photos and videos of your IDPs (#24)', href: '/idp-media.html', ready: true },
   ],
   'Customer': [
     { title: 'Browse IDPs', text: 'See the latest projects', href: '/index.html', ready: true },

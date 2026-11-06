@@ -63,3 +63,16 @@ INSERT OR IGNORE INTO user_profile (name, description) VALUES
     ('Interior Designer',   'Manages company information and IDP portfolio'),
     ('Customer',            'Searches, views and saves IDPs'),
     ('Platform Manager',    'Manages IDP categories and views reports');
+
+-- Story #24: visual media belonging to an Interior Design Project.
+-- Stored as BLOBs for a self-contained SQLite class project; production would use object storage.
+CREATE TABLE IF NOT EXISTS idp_media (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    idp_id          INTEGER NOT NULL REFERENCES idp(id) ON DELETE CASCADE,
+    file_name       TEXT NOT NULL,
+    mime_type       TEXT NOT NULL CHECK (mime_type IN ('image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm')),
+    file_size       INTEGER NOT NULL CHECK (file_size > 0),
+    data            BLOB NOT NULL,
+    created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_idp_media_idp ON idp_media(idp_id);

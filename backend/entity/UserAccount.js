@@ -69,6 +69,10 @@ class UserAccount {
     return false;
   }
 
+  canUploadIDPMedia() {
+    return false;
+  }
+
   canViewMyIDPs() {
     return false;
   }
@@ -84,6 +88,9 @@ class InteriorDesigner extends UserAccount {
   }
 
   canViewMyIDPs() {
+    return true;
+  }
+  canUploadIDPMedia() {
     return true;
   }
 
