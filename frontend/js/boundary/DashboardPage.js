@@ -10,7 +10,7 @@ const MENU = {
   ],
   'Customer': [
     { title: 'Browse IDPs', text: 'See the latest projects', href: '/index.html', ready: true },
-    { title: 'Search & filter IDPs', text: 'By style, budget, size and duration' },
+    { title: 'Search & filter IDPs', text: 'By style, budget, size and duration (#2)', href: '/filter-idps.html', ready: true },
     { title: 'Recommended for you', text: 'Projects similar to your favourites (#1)', href: '/recommendations.html', ready: true },
     { title: 'My favourites', text: 'Compare the IDPs you saved (#7)', href: '/my-favourites.html', ready: true },
     { title: 'Contact a designer', text: 'Discuss your renovation ideas' },

@@ -8,6 +8,7 @@ const recommendRoutes = require('./routes/recommendRoutes');
 const metricsRoutes = require('./routes/metricsRoutes');
 const favouriteRoutes = require('./routes/favouriteRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
+const filterRoutes = require('./routes/filterRoutes');
 
 function createApp(db) {
   const app = express();
@@ -21,6 +22,7 @@ function createApp(db) {
   app.use('/api/metrics', metricsRoutes(db));
   app.use('/api/favourites', favouriteRoutes(db));
   app.use('/api/idps', mediaRoutes(db));
+  app.use('/api/filter', filterRoutes(db));
 
   app.use('/api', (req, res) =>
     res.status(404).json({

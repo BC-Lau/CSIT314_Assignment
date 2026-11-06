@@ -115,6 +115,32 @@ class IDP {
     return this.db.prepare(sql).all(...params).map(IDP.fromRow);
   }
 
+  /**
+   * #2 Public IDPs matching every criterion that is given. null means "not selected".
+   * Budget and house size ranges are inclusive, 
+   * duration and style (styleTag) must match exactly.
+   */
+  findByFilters(minBudget, maxBudget, minHouseSize, maxHouseSize, duration, styleTag) {
+    const conditions = ["i.visibility = 'public'"];
+    const params = [];
+    const add = (condition, value) => {
+      if (value === null || value === undefined) return;
+      conditions.push(condition);
+      params.push(value);
+    };
+    add('i.budget >= ?', minBudget);
+    add('i.budget <= ?', maxBudget);
+    add('i.house_size >= ?', minHouseSize);
+    add('i.house_size <= ?', maxHouseSize);
+    add('i.duration = ?', duration);
+    add('i.style = ?', styleTag);
+
+    return this.db
+      .prepare(`${IDP.SELECT} WHERE ${conditions.join(' AND ')} ORDER BY i.created_at DESC, i.id DESC`)
+      .all(...params)
+      .map(IDP.fromRow);
+  }
+
   static fromRow(row) {
     return {
       id: row.id,

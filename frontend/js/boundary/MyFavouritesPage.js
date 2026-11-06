@@ -1,5 +1,6 @@
 // BOUNDARY: #7 My favourites page (Customers)
-// Shows the saved IDPs in a table so they can be compared. Calls /api/favourites/idps
+// Shows the saved IDPs in a table so they can be compared
+// Calls /api/favourites/idps
 class MyFavouritesPage {
   async init() {
     this.account = await Nav.render();
