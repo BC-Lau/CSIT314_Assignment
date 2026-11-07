@@ -23,6 +23,42 @@ class ContactRequest {
       .all(startDate, endDate)
       .map((row) => ({ ...row }));
   }
+
+  // #25 trend (extra): the same counts, but one number per day / month / year
+  countConnectedCustomersByPeriod(startDate, endDate, unit) {
+    return this.db
+      .prepare(`SELECT strftime(?, created_at) AS period, COUNT(DISTINCT customer_id) AS total
+                  FROM contact_request
+                 WHERE created_at >= ? AND created_at < date(?, '+1 day')
+                 GROUP BY period`)
+      .all(PERIOD_FORMAT[unit], startDate, endDate)
+      .map((row) => ({ ...row }));
+  }
+
+  countByDesignerAndPeriod(startDate, endDate, unit) {
+    return this.db
+      .prepare(`SELECT strftime(?, created_at) AS period, designer_id AS designerId,
+                       COUNT(DISTINCT customer_id) AS customerCount
+                  FROM contact_request
+                 WHERE created_at >= ? AND created_at < date(?, '+1 day')
+                 GROUP BY period, designer_id`)
+      .all(PERIOD_FORMAT[unit], startDate, endDate)
+      .map((row) => ({ ...row }));
+  }
+
+  // demo tool: `count` random customers contact this designer on `date` (returns how many were added)
+  addDemoContacts(designerId, date, count) {
+    return Number(this.db
+      .prepare(`INSERT INTO contact_request (customer_id, designer_id, message, created_at)
+                SELECT a.id, ?, 'Demo contact', ? || ' 12:00:00'
+                  FROM user_account a JOIN user_profile p ON p.id = a.profile_id
+                 WHERE p.name = 'Customer'
+                 ORDER BY RANDOM() LIMIT ?`)
+      .run(designerId, date, count).changes);
+  }
 }
+
+// how one period is written: day '2026-03-31', month '2026-03', year '2026'
+const PERIOD_FORMAT = { day: '%Y-%m-%d', month: '%Y-%m', year: '%Y' };
 
 module.exports = ContactRequest;

@@ -36,6 +36,70 @@
         <tbody id="byDesigner"></tbody>
       </table>
     </section>
+
+    <!-- #25 extra: how the numbers change over time (total + top 10 designers) -->
+    <section class="card" style="margin-top:20px">
+      <h2>Trend</h2>
+      <p class="muted">Connected customers per day / month / year: the total and the top 10 designers.</p>
+      <form id="trendForm" class="row">
+        <div>
+          <label for="trendRange">Show</label>
+          <select id="trendRange">
+            <option value="year">By year (last 5 years)</option>
+            <option value="month" selected>By month (last 18 months)</option>
+            <option value="day">By day (last 30 days)</option>
+            <option value="custom">Custom dates (max 2 years)</option>
+          </select>
+        </div>
+        <div class="trend-custom" hidden>
+          <label for="trendStart">Start date</label>
+          <input type="date" id="trendStart">
+        </div>
+        <div class="trend-custom" hidden>
+          <label for="trendEnd">End date</label>
+          <input type="date" id="trendEnd">
+        </div>
+        <div><label>&nbsp;</label><button type="submit" class="btn">Show trend</button></div>
+      </form>
+      <div id="trendMessage" hidden></div>
+      <div id="trendResults" hidden>
+        <p class="muted" id="trendPeriod"></p>
+        <div class="tag-group" id="chartView">
+          <label class="chip"><input type="radio" name="chartView" value="total"> Total</label>
+          <label class="chip"><input type="radio" name="chartView" value="top10"> Top 10</label>
+          <label class="chip"><input type="radio" name="chartView" value="mix" checked> Mix</label>
+        </div>
+        <svg id="trendChart" class="trend-chart" viewBox="0 0 800 320" role="img" aria-label="Connected customers over time"></svg>
+        <div id="trendLegend" class="trend-legend"></div>
+        <div class="table-scroll">
+          <table class="metric-table trend-table">
+            <thead><tr id="trendHead"></tr></thead>
+            <tbody id="trendBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- demo tool: add contacts so the numbers change during a demo (opened with the small tab on the right) -->
+    <aside id="demoPanel" class="card demo-panel" hidden>
+      <h3>Add demo data</h3>
+      <p class="muted" id="demoRange"></p>
+      <label for="demoDesigner">Designer</label>
+      <select id="demoDesigner" size="8"></select>
+      <div class="row" style="margin-top:10px">
+        <div>
+          <label for="demoDate">Date</label>
+          <input type="date" id="demoDate">
+        </div>
+        <div>
+          <label for="demoCount">Customers to add</label>
+          <input type="number" id="demoCount" min="1" max="100" value="5">
+        </div>
+      </div>
+      <p style="margin-top:12px"><button type="button" class="btn" id="demoAdd">Add</button></p>
+      <div id="demoMessage" hidden></div>
+    </aside>
+    <button type="button" id="demoToggle" class="demo-tab" title="Add demo data">‹</button>
   </main>
   <script src="/js/common.js"></script>
   <script src="/js/boundary/MetricsPage.js"></script>

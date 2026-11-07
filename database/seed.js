@@ -9,7 +9,7 @@ const { loadPresetTags } = require('./presetTags');
 
 const DB_FILE = path.join(__dirname, 'app.db');
 const PASSWORD = 'password123';
-const COUNTS = { designers: 40, customers: 120, managers: 5, admins: 3, idps: 150, contacts: 400 };
+const COUNTS = { designers: 40, customers: 120, managers: 5, admins: 3, idps: 150, contacts: 2000 };
 
 // ---------- repeatable random numbers (same data every run) ----------
 let seed = 314;
@@ -45,7 +45,7 @@ db.exec('BEGIN');
 const insertUser = db.prepare('INSERT INTO user_account (username, password_hash, email, profile_id, created_at) VALUES (?, ?, ?, ?, ?)');
 const users = { 'User Admin': [], 'Interior Designer': [], 'Customer': [], 'Platform Manager': [] };
 function addUser(username, profile) {
-  const id = Number(insertUser.run(username, hashPassword(PASSWORD), `${username}@example.com`, profileId(profile), daysAgo(400)).lastInsertRowid);
+  const id = Number(insertUser.run(username, hashPassword(PASSWORD), `${username}@example.com`, profileId(profile), daysAgo(2000)).lastInsertRowid);
   users[profile].push(id);
 }
 addUser('admin', 'User Admin');
@@ -81,7 +81,7 @@ for (let i = 0; i < COUNTS.idps; i++) {
     `A ${pick([style.toLowerCase(), ...presetTags.style[style]])} makeover for a ${home} in ${area}. ` +
     `We redesigned the ${typeList.map((t) => pick([t.toLowerCase(), ...presetTags.type[t]])).join(', ')} ` +
     `with ${pick(['plenty of storage', 'better lighting', 'an open layout', 'natural materials', 'a calm colour palette'])}.`;
-  const createdAt = daysAgo(365);
+  const createdAt = daysAgo(1825); // last 5 years (for the #25 trend chart)
   const id = Number(insertIDP.run(
     pick(users['Interior Designer']), title, description,
     int(15, 250) * 1000, int(400, 3000), `${int(4, 20)} weeks`,
@@ -90,13 +90,16 @@ for (let i = 0; i < COUNTS.idps; i++) {
   idps.push(id);
 }
 
-// Contact requests (#25): spread over the last 90 days
+// Contact requests (#25): any day between the IDP being posted and today,
+// so newer months have more contacts (more IDPs online)
 const insertContact = db.prepare('INSERT INTO contact_request (customer_id, designer_id, idp_id, message, created_at) VALUES (?, ?, ?, ?, ?)');
-const idpOwner = db.prepare('SELECT designer_id FROM idp WHERE id = ?');
+const idpInfo = db.prepare('SELECT designer_id, created_at FROM idp WHERE id = ?');
 for (let i = 0; i < COUNTS.contacts; i++) {
   const idpId = pick(idps);
-  insertContact.run(pick(users.Customer), idpOwner.get(idpId).designer_id, idpId,
-    pick(['Hi, can I get a quote?', 'Love this design!', 'Are you available next month?', 'Please contact me.']), daysAgo(90));
+  const idp = idpInfo.get(idpId);
+  const idpAgeDays = (Date.now() - Date.parse(`${idp.created_at.replace(' ', 'T')}Z`)) / 86400000;
+  insertContact.run(pick(users.Customer), idp.designer_id, idpId,
+    pick(['Hi, can I get a quote?', 'Love this design!', 'Are you available next month?', 'Please contact me.']), daysAgo(idpAgeDays));
 }
 
 // Favourites (#1): customer1 always has some favourites, 
