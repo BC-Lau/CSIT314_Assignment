@@ -108,6 +108,10 @@ users.Customer.forEach((customerId, index) => {
   for (const idpId of pickSome(idps, howMany)) insertFavourite.run(customerId, idpId, daysAgo(60));
 });
 
+const { seedMedia } = require('./seedMedia');
+const seededMedia = seedMedia(db);
+console.log('Seeded demo media:', seededMedia);
+
 db.exec('COMMIT');
 
 const count = (t) => db.prepare(`SELECT COUNT(*) AS n FROM ${t}`).get().n;
