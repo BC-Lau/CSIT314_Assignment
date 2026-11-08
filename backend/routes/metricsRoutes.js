@@ -6,6 +6,7 @@ const UserAccount = require('../entity/UserAccount');
 const ConnectedCustomersController = require('../controller/ConnectedCustomersController');
 const ConnectedCustomersTrendController = require('../controller/ConnectedCustomersTrendController');
 const AddDemoContactsController = require('../controller/AddDemoContactsController');
+const TrackInteractionRateController = require('../controller/TrackInteractionRateController');
 
 function metricsRoutes(db) {
   const router = express.Router();
@@ -13,6 +14,43 @@ function metricsRoutes(db) {
   const controller = new ConnectedCustomersController(new ContactRequest(db));
   const trendController = new ConnectedCustomersTrendController(new ContactRequest(db));
   const demoController = new AddDemoContactsController(new ContactRequest(db));
+  const interactionController = new TrackInteractionRateController(db, userAccount);
+
+  const logTelemetry = (req, res) => {
+    const user = userAccount.findById(req.get('X-User-Id'));
+    if (!user || user.profile !== 'Customer') {
+      return res.status(403).json({ success: false, message: 'Only customers can submit interaction telemetry' });
+    }
+    const logged = interactionController.logInteraction(user.id, req.body?.idpId, req.body?.type);
+    return res.status(logged ? 201 : 400).json({
+      success: logged,
+      message: logged ? 'Interaction recorded' : 'Unable to record interaction'
+    });
+  };
+  router.post('/telemetry/log', logTelemetry);
+  router.post('/log', logTelemetry);
+
+  const getIdpInteractionRate = (req, res) => {
+    const user = userAccount.findById(req.get('X-User-Id'));
+    if (!user || user.profile !== 'Platform Manager') {
+      return res.status(403).json({ success: false, message: 'Only platform managers can view interaction reports' });
+    }
+    const report = interactionController.generateIdpInteractionRateReport(
+      req.query.timeframe,
+      req.query.categoryId,
+      req.query.interactionType
+    );
+    return res.json({
+      success: true,
+      report: {
+        reportId: report.reportId,
+        generatedDate: report.generatedDate,
+        metricsData: report.metricsData
+      }
+    });
+  };
+  router.get('/idp-interaction-rate', getIdpInteractionRate);
+  router.get('/interaction-rate', getIdpInteractionRate);
 
   // GET /api/metrics/connected-customers?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD (both optional)
   router.get('/connected-customers', (req, res) => {

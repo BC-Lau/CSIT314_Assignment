@@ -21,6 +21,7 @@ function createApp(db) {
   app.use('/api/idps', idpRoutes(db));
   app.use('/api/recommendations', recommendRoutes(db));
   app.use('/api/metrics', metricsRoutes(db));
+  app.use('/api/telemetry', metricsRoutes(db));
   app.use('/api/favourites', favouriteRoutes(db));
   app.use('/api/idps', mediaRoutes(db));
   app.use('/api/filter', filterRoutes(db));
