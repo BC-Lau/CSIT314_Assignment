@@ -4,6 +4,7 @@ const VerificationApp = require('../entity/VerificationApp');
 const Notification = require('../entity/Notification');
 const VerifyLicenseController = require('../controller/VerifyLicenseController');
 const ManageUserAccountsController = require('../controller/ManageUserAccountsController');
+const ManageIDPTagsController = require('../controller/ManageIDPTagsController');
 
 function adminRoutes(db) {
   const router = express.Router();
@@ -13,6 +14,13 @@ function adminRoutes(db) {
 
   const licenseController = new VerifyLicenseController(userAccount);
   const accountController = new ManageUserAccountsController(userAccount);
+  const tagController = new ManageIDPTagsController(db);
+  const requirePlatformManager = (req, res, next) => {
+    const user = currentUser(req);
+    if (!user) return res.status(401).json({ success: false, message: 'Login required' });
+    if (user.profile !== 'Platform Manager') return res.status(403).json({ success: false, message: 'Only platform managers can manage IDP tags' });
+    return next();
+  };
   const currentUser = (req) => userAccount.findById(req.get('X-User-Id'));
   const requireUserAdmin = (req, res, next) => {
     const user = currentUser(req);
@@ -22,6 +30,18 @@ function adminRoutes(db) {
     }
     return next();
   };
+
+  router.get('/tags', requirePlatformManager, (req, res) => {
+    res.json({ success: true, ...tagController.list() });
+  });
+  router.post('/tags/bulk', requirePlatformManager, (req, res) => {
+    const result = tagController.add(req.body?.category, req.body?.tags);
+    res.status(result.success ? 200 : 400).json(result);
+  });
+  router.delete('/tags/bulk', requirePlatformManager, (req, res) => {
+    const result = tagController.remove(req.body?.category, req.body?.tags);
+    res.status(result.success ? 200 : 400).json(result);
+  });
 
   router.get('/verifications/pending', requireUserAdmin, (req, res) => {
     res.json({ success: true, applications: licenseController.fetchPendingQueue() });
