@@ -1,0 +1,31 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Consultations - InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+
+  <main>
+    <h1>My Consultations</h1>
+    <p class="muted">
+      View and manage your consultation bookings.
+    </p>
+
+    <div id="message" role="status" aria-live="polite"></div>
+    <div id="consultationList">
+      <p class="muted">Loading consultations...</p>
+    </div>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/MyConsultationsPage.js"></script>
+  <script>
+    new MyConsultationsPage().init();
+  </script>
+</body>
+</html>

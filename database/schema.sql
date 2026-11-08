@@ -90,3 +90,62 @@ CREATE TABLE IF NOT EXISTS idp_media (
     created_at      TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_idp_media_idp ON idp_media(idp_id);
+
+
+-- ============================================================
+-- User Story #20: Consultation Availability Management
+-- ============================================================
+
+-- Each Interior Designer owns one availability schedule.
+CREATE TABLE IF NOT EXISTS availability_schedule (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    designer_id INTEGER NOT NULL UNIQUE
+                REFERENCES user_account(id)
+);
+
+-- Each schedule contains multiple consultation slots.
+CREATE TABLE IF NOT EXISTS consultation_slot (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    schedule_id INTEGER NOT NULL
+                REFERENCES availability_schedule(id)
+                ON DELETE CASCADE,
+    start_time  TEXT NOT NULL,
+    end_time    TEXT NOT NULL,
+    status      TEXT NOT NULL DEFAULT 'available'
+                CHECK (status IN ('available', 'booked')),
+
+    CHECK (end_time > start_time)
+);
+
+-- Improve lookup performance for consultation slots.
+CREATE INDEX IF NOT EXISTS idx_consultation_slot_schedule
+ON consultation_slot(schedule_id);
+
+CREATE INDEX IF NOT EXISTS idx_consultation_slot_time
+ON consultation_slot(start_time, end_time);
+
+
+-- ============================================================
+-- User Story #3 / #20 Integration: Consultation Requests
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS consultation_request (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    slot_id     INTEGER NOT NULL
+                REFERENCES consultation_slot(id),
+    customer_id INTEGER NOT NULL
+                REFERENCES user_account(id),
+    message     TEXT,
+    status      TEXT NOT NULL DEFAULT 'booked'
+                CHECK (status IN ('booked', 'cancelled')),
+    created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+    cancelled_at TEXT
+);
+
+-- Allow only one active booking per consultation slot.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_consultation_request_active_slot
+ON consultation_request(slot_id)
+WHERE status = 'booked';
+
+CREATE INDEX IF NOT EXISTS idx_consultation_request_customer
+ON consultation_request(customer_id);

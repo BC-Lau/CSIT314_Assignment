@@ -1,3 +1,4 @@
+
 const express = require('express');
 const path = require('node:path');
 
@@ -8,6 +9,12 @@ const metricsRoutes = require('./routes/metricsRoutes');
 const favouriteRoutes = require('./routes/favouriteRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
 const filterRoutes = require('./routes/filterRoutes');
+
+// User Stories #20 and #3
+const availabilityRoutes = require('./routes/availabilityRoutes');
+const consultationRequestRoutes = require('./routes/consultationRequestRoutes');
+
+// Other user stories from main
 const adminRoutes = require('./routes/adminRoutes');
 const designerRoutes = require('./routes/designerRoutes');
 
@@ -25,6 +32,12 @@ function createApp(db) {
   app.use('/api/favourites', favouriteRoutes(db));
   app.use('/api/idps', mediaRoutes(db));
   app.use('/api/filter', filterRoutes(db));
+
+  // User Stories #20 and #3
+  app.use('/api/availability', availabilityRoutes(db));
+  app.use('/api/consultation-requests', consultationRequestRoutes(db));
+
+  // Other user stories
   app.use('/api/admin', adminRoutes(db));
   app.use('/api/designer', designerRoutes(db));
 

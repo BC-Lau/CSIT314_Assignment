@@ -20,16 +20,37 @@ class ViewIDPPage {
   }
 
   displayIDP(idp, isOwner) {
-    document.title = `${idp.title} · InteriorMatch`;
+    document.title = `${idp.title} - InteriorMatch`;
+
     const box = document.getElementById('idp');
     box.textContent = '';
+
     box.append(el('article', { className: 'idp-details' },
       this.displayHeader(idp, isOwner),
       this.displayTags(idp),
       this.displayFacts(idp),
-      el('p', { className: 'description', textContent: idp.description })
+      el('p', {
+        className: 'description',
+        textContent: idp.description
+      })
     ));
+
+    // User Story #20:
+    // Customers can view consultation availability.
+    if (this.account?.profile === 'Customer') {
+      const availabilitySection = el('div', {
+        id: 'consultationAvailability'
+      });
+
+      box.append(availabilitySection);
+
+      const availabilityPage =
+        new CustomerAvailabilityPage(availabilitySection);
+
+      availabilityPage.displaySlots(idp.designerId);
+    }
   }
+
 
   displayHeader(idp, isOwner) {
     const header = el('div', {},

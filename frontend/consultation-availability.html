@@ -1,0 +1,63 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consultation Availability - InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+
+  <main>
+    <h1>Consultation Availability</h1>
+    <p>Manage your consultation time slots for customers.</p>
+
+    <div class="card">
+      <h2 id="formTitle">Add Consultation Slot</h2>
+
+      <form id="slotForm">
+        <label for="startTime">Start date and time</label>
+        <input
+          type="datetime-local"
+          id="startTime"
+          required
+        >
+
+        <label for="endTime">End date and time</label>
+        <input
+          type="datetime-local"
+          id="endTime"
+          required
+        >
+
+        <p>
+          <button class="btn" type="submit" id="saveSlot">
+            Add Slot
+          </button>
+          <button
+            class="btn secondary"
+            type="button"
+            id="cancelEdit"
+            hidden
+          >
+            Cancel Edit
+          </button>
+        </p>
+      </form>
+
+      <p id="message" role="status" aria-live="polite"></p>
+    </div>
+
+    <h2>My Consultation Slots</h2>
+    <div id="slotList"></div>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/AvailabilityManagementPage.js"></script>
+  <script>
+    new AvailabilityManagementPage().init();
+  </script>
+</body>
+</html>

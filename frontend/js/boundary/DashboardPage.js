@@ -5,6 +5,7 @@ const MENU = {
     { title: 'License verification', text: 'Submit your business license and check verification status', href: '/designer-license.html', ready: true },
     { title: 'Create IDP', text: 'Add a new project to your portfolio (#13)', href: '/idp-create.html', ready: true },
     { title: 'My IDPs', text: 'View your projects (update / delete: #14, #15)', href: '/my-idps.html', ready: true },
+    { title: 'Consultation Availability', text: 'Manage your available consultation time slots (#20)', href: '/consultation-availability.html', ready: true},
     { title: 'Company information', text: 'Manage your company profile' },
     { title: 'IDP statistics', text: 'Views and favourites of each IDP' },
     { title: 'Upload project media', text: 'Showcase photos and videos of your IDPs (#24)', href: '/idp-media.html', ready: true },
@@ -15,6 +16,8 @@ const MENU = {
     { title: 'Recommended for you', text: 'Projects similar to your favourites (#1)', href: '/recommendations.html', ready: true },
     { title: 'My favourites', text: 'Compare the IDPs you saved (#7)', href: '/my-favourites.html', ready: true },
     { title: 'Contact a designer', text: 'Discuss your renovation ideas' },
+    { title: 'My Consultations', text: 'View and cancel consultation bookings (#3)', href: '/my-consultations.html', ready: true
+},
   ],
   'Platform Manager': [
     { title: 'Connected customers', text: 'Customers who contacted designers (#25)', href: '/metrics.html', ready: true },
