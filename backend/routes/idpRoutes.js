@@ -42,7 +42,8 @@ function idpRoutes(db, { aiService = new AIService() } = {}) {
   router.post('/', (req, res) => {
     const user = userAccount.findById(req.get('X-User-Id'));
     const result = createIDPController.createIDP(user, req.body ?? {});
-    res.status(result.success ? 201 : 400).json(result);
+    const { statusCode = result.success ? 201 : 400, ...body } = result;
+    res.status(statusCode).json(body);
   });
 
   // #23 Suggest tags (used by the Create IDP form; Update IDP will reuse it)
@@ -62,6 +63,9 @@ function idpRoutes(db, { aiService = new AIService() } = {}) {
   router.get('/:id', (req, res) => {
     const user = userAccount.findById(req.get('X-User-Id'));
     const result = viewIDPController.viewIDP(user, req.params.id);
+    if (result.success) {
+      idp.incrementViewCount(req.params.id);
+    }
     res.status(result.success ? 200 : 404).json(result);
   });
 

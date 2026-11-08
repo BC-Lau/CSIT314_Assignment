@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>License verification · InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main class="form-page">
+    <p><a href="/dashboard.html">← Back to dashboard</a></p>
+    <section class="card">
+      <h1>Interior Designer license verification</h1>
+      <p class="muted">Submit your business details and an actual license file. An admin will review the information before you can publish IDPs.</p>
+      <p id="verificationStatus" class="message" role="status">Loading verification status…</p>
+      <p id="rejectionReason" class="message error hidden"></p>
+      <section id="submittedLicense" class="submitted-license hidden" aria-live="polite">
+        <h2>Your submitted license</h2>
+        <dl>
+          <dt>Company name</dt><dd id="submittedCompany"></dd>
+          <dt>UEN</dt><dd id="submittedUen"></dd>
+          <dt>License number</dt><dd id="submittedLicenseNumber"></dd>
+          <dt>Submitted document</dt><dd id="submittedDocument"></dd>
+        </dl>
+        <button id="resubmitLicense" class="btn hidden" type="button">Resubmit license</button>
+      </section>
+      <form id="licenseForm">
+        <label for="companyName">Company name</label>
+        <input id="companyName" maxlength="200" required>
+        <label for="uen">UEN</label>
+        <input id="uen" maxlength="30" required>
+        <label for="licenseNumber">Business license number</label>
+        <input id="licenseNumber" maxlength="100" required>
+        <label for="licenseDocument">Business license document</label>
+        <input id="licenseDocument" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
+        <p id="previousDocument" class="muted"></p>
+        <p class="muted"><strong>Accepted formats:</strong> PDF (.pdf) or Word (.docx) only. <strong>Maximum size:</strong> 8 MB. Document links are not accepted; upload the readable file containing your business license details.</p>
+        <div class="form-actions">
+          <button class="btn" type="submit">Submit for review</button>
+        </div>
+      </form>
+      <p id="message" class="message" role="status"></p>
+    </section>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/DesignerLicenseSubmissionPage.js"></script>
+  <script>new DesignerLicenseSubmissionPage().init();</script>
+</body>
+</html>

@@ -24,6 +24,7 @@ beforeEach(() => {
     username: 'cust1', password: 'pass1234', profileId: profileId(db, 'Customer'),
   });
   designer = userAccount.findById(designerId);
+  designer.setVerifiedStatus(true);
   customer = userAccount.findById(customerId);
   idp = new IDP(db, () => PRESET_TAGS);
   controller = new CreateIDPController(idp);
@@ -51,6 +52,15 @@ test('interior designer can create an IDP with a style and types', () => {
   assert.equal(result.idp.visibility, 'public');
   assert.equal(result.idp.style, 'Modern');
   assert.deepEqual(idp.getIDPById(result.idp.id).type, ['Kitchen', 'Bedroom']); // read back as a list
+});
+
+test('unverified designer cannot publish an IDP', () => {
+  designer.setVerifiedStatus(false);
+  assert.deepEqual(controller.createIDP(designer, VALID), {
+    success: false,
+    statusCode: 403,
+    message: 'Only verified Interior Designers can interact with customers or publish IDPs.'
+  });
 });
 
 test('at least 1 type is required and duplicates are removed', () => {

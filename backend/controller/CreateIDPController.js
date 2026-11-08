@@ -19,6 +19,13 @@ class CreateIDPController {
     if (!user || !user.canCreateIDP()) {
       return { success: false, message: 'Only interior designers can create IDPs' };
     }
+    if (user.isVerified !== true) {
+      return {
+        success: false,
+        statusCode: 403,
+        message: 'Only verified Interior Designers can interact with customers or publish IDPs.'
+      };
+    }
     const title = String(idpData.title ?? '').trim();
     const description = String(idpData.description ?? '').trim();
     if (!title || !description) {

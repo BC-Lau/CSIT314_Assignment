@@ -14,6 +14,9 @@ class ViewIDPPage {
     const result = await Api.get(`/api/idps/${encodeURIComponent(idpId)}`);
     if (!result.success) return this.displayMessage(result.message ?? 'Could not load the IDP');
     this.displayIDP(result.idp, result.isOwner);
+    if (this.account?.profile === 'Customer') {
+      Api.post('/api/telemetry/log', { idpId: Number(idpId), type: 'view' }).catch(() => {});
+    }
   }
 
   displayIDP(idp, isOwner) {

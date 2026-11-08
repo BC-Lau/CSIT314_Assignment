@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IDP interaction rate · InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <p><a href="/dashboard.html">← Back to dashboard</a></p>
+    <h1>IDP interaction rate</h1>
+    <p class="muted">Customer interactions divided by views for each published IDP.</p>
+
+    <section class="card" style="margin-bottom:20px">
+      <form id="interactionRateForm" class="row">
+        <div>
+          <label for="interactionTimeframe">Timeframe</label>
+          <select id="interactionTimeframe">
+            <option value="7d">Last 7 days</option>
+            <option value="30d" selected>Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+            <option value="all">All time</option>
+          </select>
+        </div>
+        <div>
+          <label for="interactionCategory">Style</label>
+          <select id="interactionCategory">
+            <option value="">All styles</option>
+          </select>
+        </div>
+        <div>
+          <label for="interactionType">Interaction type</label>
+          <select id="interactionType">
+            <option value="all">All interactions</option>
+            <option value="favourite">Favourites</option>
+            <option value="comment">Comments</option>
+            <option value="consultation_request">Consultation requests</option>
+          </select>
+        </div>
+        <div><label>&nbsp;</label><button class="btn" type="submit">Apply filters</button></div>
+      </form>
+      <p id="interactionRateMessage" class="message" role="status"></p>
+      <div class="table-scroll">
+        <table class="metric-table">
+          <thead><tr><th>IDP</th><th>Views</th><th>Interactions</th><th>Interaction rate</th></tr></thead>
+          <tbody id="interactionRateRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/IdpInteractionRatePage.js"></script>
+  <script>new IdpInteractionRatePage().init();</script>
+</body>
+</html>

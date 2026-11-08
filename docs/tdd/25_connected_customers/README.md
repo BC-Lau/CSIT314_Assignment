@@ -34,3 +34,8 @@ node --test tests/ContactRequest.test.js tests/ConnectedCustomersController.test
 Change `v1_no_function` to `v2_no_validation` or `v3_final` for the other steps.
 
 **Always copy `v3_final` back when you are done**, before committing.
+
+Note (11/7): `v3_final/backend/entity/ContactRequest.js` also has the two trend queries
+(`countConnectedCustomersByPeriod`, `countByDesignerAndPeriod`) used by the extra trend chart
+(`ConnectedCustomersTrendController`, tests in `tests/ConnectedCustomersTrendController.test.js`).
+They are not part of the 14 TDD tests; they are in v3 only so that copying v3 back does not delete them.

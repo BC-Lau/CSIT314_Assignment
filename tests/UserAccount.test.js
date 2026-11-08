@@ -41,3 +41,20 @@ test('login fails for suspended account', () => {
   db.prepare("UPDATE user_account SET is_active = 0 WHERE username = 'hsu'").run();
   assert.equal(userAccount.login('hsu', 'secret123'), null);
 });
+
+test('admin updates an interior designer verification status', () => {
+  const designerId = userAccount.createUserAccount({
+    username: 'designer-admin-edit',
+    password: 'secret123',
+    profileId: profileId(db, 'Interior Designer')
+  });
+
+  const verified = userAccount.updateAccount(designerId, { isVerified: true });
+  assert.equal(verified.profile, 'Interior Designer');
+  assert.equal(verified.isVerified, true);
+  assert.equal(verified.hasVerifiedBadge, true);
+
+  const unverified = userAccount.updateAccount(designerId, { isVerified: false });
+  assert.equal(unverified.isVerified, false);
+  assert.equal(unverified.hasVerifiedBadge, false);
+});

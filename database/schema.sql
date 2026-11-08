@@ -19,6 +19,10 @@ CREATE TABLE IF NOT EXISTS user_account (
     email          TEXT,
     profile_id     INTEGER NOT NULL REFERENCES user_profile(id),
     is_active      INTEGER NOT NULL DEFAULT 1,
+    is_locked      INTEGER NOT NULL DEFAULT 0,
+    security_incident_count INTEGER NOT NULL DEFAULT 0,
+    is_verified    INTEGER NOT NULL DEFAULT 0,
+    has_verified_badge INTEGER NOT NULL DEFAULT 0,
     created_at     TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -34,8 +38,18 @@ CREATE TABLE IF NOT EXISTS idp (
     visibility  TEXT    NOT NULL DEFAULT 'public' CHECK (visibility IN ('public', 'private')),  -- private = hidden from home / recommend pages
     style       TEXT    NOT NULL,              -- exactly 1 preset style
     type        TEXT    NOT NULL DEFAULT '[]', -- JSON array, 1..* preset types
+    view_count  INTEGER NOT NULL DEFAULT 0,
     created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS interaction_log (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_id         INTEGER NOT NULL REFERENCES user_account(id),
+    idp_id              INTEGER NOT NULL REFERENCES idp(id) ON DELETE CASCADE,
+    interaction_type    TEXT NOT NULL CHECK (interaction_type IN ('view', 'favourite', 'comment', 'consultation_request')),
+    timestamp           TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_interaction_log_idp_time ON interaction_log(idp_id, timestamp);
 
 -- #25: a customer contacting an interior designer
 CREATE TABLE IF NOT EXISTS contact_request (
