@@ -41,6 +41,7 @@
             <th>Username</th>
             <th>Email</th>
             <th>Profile</th>
+            <th>License</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -67,6 +68,13 @@
           </div>
           <label for="accountProfile">Profile</label>
           <select id="accountProfile" required></select>
+          <div id="verifiedStatusField" class="hidden">
+            <label class="checkbox-label">
+              <input id="accountIsVerified" type="checkbox">
+              Designer license verified
+            </label>
+            <p class="muted">Changing this status directly updates the designer's ability to publish IDPs and interact with customers.</p>
+          </div>
           <p id="accountFormMessage" class="message" role="status"></p>
           <div class="form-actions">
             <button class="btn secondary" id="cancelAccountForm" type="button">Cancel</button>

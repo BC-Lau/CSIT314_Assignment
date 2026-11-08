@@ -9,6 +9,7 @@ const favouriteRoutes = require('./routes/favouriteRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
 const filterRoutes = require('./routes/filterRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const designerRoutes = require('./routes/designerRoutes');
 
 function createApp(db) {
   const app = express();
@@ -24,6 +25,7 @@ function createApp(db) {
   app.use('/api/idps', mediaRoutes(db));
   app.use('/api/filter', filterRoutes(db));
   app.use('/api/admin', adminRoutes(db));
+  app.use('/api/designer', designerRoutes(db));
 
   app.use('/api', (req, res) =>
     res.status(404).json({

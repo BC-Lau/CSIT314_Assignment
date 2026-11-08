@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>License verification · InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <div class="page-heading">
+      <div>
+        <a class="muted back-link" href="/dashboard.html">← Dashboard</a>
+        <h1>Interior Designer license verification</h1>
+        <p class="muted">Review the submitted license details and cross-check them against public registries.</p>
+      </div>
+    </div>
+    <p id="message" class="message" role="status"></p>
+    <section id="applicationList" class="verification-list" aria-live="polite"></section>
+
+    <div id="rejectModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="rejectModalTitle">
+      <div class="modal-panel card narrow-modal">
+        <h2 id="rejectModalTitle">Reject license application</h2>
+        <form id="rejectForm">
+          <label for="rejectReason">Reason for rejection</label>
+          <textarea id="rejectReason" required maxlength="1000"></textarea>
+          <p id="rejectFormMessage" class="message error" role="status"></p>
+          <div class="form-actions">
+            <button class="btn secondary" id="cancelReject" type="button">Cancel</button>
+            <button class="btn" type="submit">Reject application</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/AdminLicensePage.js"></script>
+  <script>new AdminLicensePage().init();</script>
+</body>
+</html>

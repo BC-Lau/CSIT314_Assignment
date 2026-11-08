@@ -107,7 +107,7 @@ class UserAccount {
     return badge;
   }
 
-  updateAccount(userId, { username, email, profileId }) {
+  updateAccount(userId, { username, email, profileId, isVerified }) {
     const account = this.findByIdIncludingInactive(userId);
     if (!account) return null;
     if (typeof username === 'string' && username.trim()) account.username = username.trim();
@@ -116,6 +116,14 @@ class UserAccount {
       UPDATE user_account SET username = ?, email = ?, profile_id = COALESCE(?, profile_id)
       WHERE id = ?
     `).run(account.username, account.email, profileId == null ? null : Number(profileId), account.id);
+    const updated = this.findByIdIncludingInactive(account.id);
+    if (updated.profile === 'Interior Designer' && typeof isVerified === 'boolean') {
+      updated.setVerifiedStatus(isVerified);
+      updated.setVerifiedBadge(isVerified);
+    } else if (updated.profile !== 'Interior Designer' && typeof isVerified === 'boolean') {
+      updated.setVerifiedStatus(false);
+      updated.setVerifiedBadge(false);
+    }
     return this.findByIdIncludingInactive(account.id);
   }
 

@@ -18,12 +18,15 @@ class VerifyLicenseController {
   approveLicense(appId) {
     const application = VerificationApp.findById(appId);
     if (!application) return { success: false, message: 'Verification application not found' };
+    if (application.status !== 'Pending') {
+      return { success: false, message: 'Only pending applications can be reviewed' };
+    }
 
-    application.setStatus('Approved');
     const designer = this.userAccount.findById(application.designerId);
-    if (!designer || typeof designer.setVerifiedStatus !== 'function') {
+    if (!designer || designer.profile !== 'Interior Designer') {
       return { success: false, message: 'Designer account not found' };
     }
+    application.setStatus('Approved');
     designer.setVerifiedStatus(true);
     designer.setVerifiedBadge(true);
     return { success: true, message: 'License approved successfully' };
@@ -34,13 +37,17 @@ class VerifyLicenseController {
     if (!application) return { success: false, message: 'Verification application not found' };
     const rejectionReason = typeof reason === 'string' ? reason.trim() : '';
     if (!rejectionReason) return { success: false, message: 'Rejection reason is required' };
+    if (application.status !== 'Pending') {
+      return { success: false, message: 'Only pending applications can be reviewed' };
+    }
 
-    application.setStatus('Rejected');
     const designer = this.userAccount.findById(application.designerId);
-    if (!designer || typeof designer.setVerifiedStatus !== 'function') {
+    if (!designer || designer.profile !== 'Interior Designer') {
       return { success: false, message: 'Designer account not found' };
     }
+    application.setStatus('Rejected', rejectionReason);
     designer.setVerifiedStatus(false);
+    designer.setVerifiedBadge(false);
     this.notifyDesigner(application.designerId, 'License Verification Rejected', rejectionReason);
     return { success: true, message: 'License rejected successfully' };
   }
