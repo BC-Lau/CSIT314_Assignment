@@ -42,6 +42,12 @@ class UserAccountsPage {
       if (event.key === 'Enter') this.renderAccounts();
     });
     document.getElementById('statusFilter').addEventListener('change', () => this.renderAccounts());
+    document.getElementById('accountProfile').addEventListener('change', (event) => {
+      document.getElementById('verifiedStatusField').classList.toggle(
+        'hidden',
+        event.target.selectedOptions[0]?.textContent !== 'Interior Designer'
+      );
+    });
   }
 
   async loadAccounts() {
@@ -65,7 +71,7 @@ class UserAccountsPage {
 
     if (filtered.length === 0) {
       const emptyRow = el('tr');
-      emptyRow.append(el('td', { colSpan: 6, className: 'muted', textContent: 'No user accounts match this view.' }));
+      emptyRow.append(el('td', { colSpan: 7, className: 'muted', textContent: 'No user accounts match this view.' }));
       this.rows.replaceChildren(emptyRow);
       return;
     }
@@ -86,6 +92,9 @@ class UserAccountsPage {
       usernameCell,
       el('td', { textContent: account.email ?? '—' }),
       el('td', { textContent: account.profile }),
+      el('td', null, account.profile === 'Interior Designer'
+        ? el('span', { className: `verification-status ${Number(account.is_verified) ? 'verified' : 'unverified'}`, textContent: Number(account.is_verified) ? 'Verified' : 'Unverified' })
+        : el('span', { className: 'muted', textContent: '—' })),
       el('td', null, el('span', { className: `account-status ${status.toLowerCase()}`, textContent: status }))
     );
 
@@ -115,6 +124,8 @@ class UserAccountsPage {
     document.getElementById('accountId').value = '';
     document.getElementById('passwordField').classList.remove('hidden');
     document.getElementById('accountPassword').required = true;
+    document.getElementById('accountIsVerified').checked = false;
+    document.getElementById('verifiedStatusField').classList.add('hidden');
     document.getElementById('saveAccountBtn').textContent = 'Create account';
     this.accountModal.classList.remove('hidden');
   }
@@ -125,6 +136,9 @@ class UserAccountsPage {
     document.getElementById('accountUsername').value = account.username;
     document.getElementById('accountEmail').value = account.email ?? '';
     document.getElementById('accountProfile').value = String(account.profile_id);
+    const verifiedField = document.getElementById('verifiedStatusField');
+    verifiedField.classList.toggle('hidden', account.profile !== 'Interior Designer');
+    document.getElementById('accountIsVerified').checked = Number(account.is_verified) === 1;
     document.getElementById('passwordField').classList.add('hidden');
     document.getElementById('accountPassword').required = false;
     document.getElementById('saveAccountBtn').textContent = 'Save changes';
@@ -142,6 +156,10 @@ class UserAccountsPage {
       email: document.getElementById('accountEmail').value,
       profileId: document.getElementById('accountProfile').value
     };
+    const profileName = document.getElementById('accountProfile').selectedOptions[0]?.textContent;
+    if (profileName === 'Interior Designer') {
+      body.isVerified = document.getElementById('accountIsVerified').checked;
+    }
     if (!id) body.password = document.getElementById('accountPassword').value;
     const result = await (id
       ? Api.request('PUT', `/api/admin/accounts/${id}`, body)

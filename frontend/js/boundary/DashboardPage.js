@@ -2,6 +2,7 @@
 // "ready: false" options are planned features (other user stories) and show as "coming soon".
 const MENU = {
   'Interior Designer': [
+    { title: 'License verification', text: 'Submit your business license and check verification status', href: '/designer-license.html', ready: true },
     { title: 'Create IDP', text: 'Add a new project to your portfolio (#13)', href: '/idp-create.html', ready: true },
     { title: 'My IDPs', text: 'View your projects (update / delete: #14, #15)', href: '/my-idps.html', ready: true },
     { title: 'Company information', text: 'Manage your company profile' },
@@ -21,6 +22,7 @@ const MENU = {
     { title: 'IDP categories', text: 'Manage the preset tags' },
   ],
   'User Admin': [
+    { title: 'License verification', text: 'Review Interior Designer license applications', href: '/admin-verifications.html', ready: true },
     { title: 'User accounts', text: 'Create, view, update and suspend accounts', href: '/user-accounts.html', ready: true },
     { title: 'User profiles', text: 'Manage the four user types' },
   ],

@@ -14,24 +14,43 @@ function adminRoutes(db) {
   const licenseController = new VerifyLicenseController(userAccount);
   const accountController = new ManageUserAccountsController(userAccount);
   const currentUser = (req) => userAccount.findById(req.get('X-User-Id'));
+  const requireUserAdmin = (req, res, next) => {
+    const user = currentUser(req);
+    if (!user) return res.status(401).json({ success: false, message: 'Login required' });
+    if (user.profile !== 'User Admin') {
+      return res.status(403).json({ success: false, message: 'Only user admins can manage license verification' });
+    }
+    return next();
+  };
 
-  router.get('/verifications/pending', (req, res) => {
+  router.get('/verifications/pending', requireUserAdmin, (req, res) => {
     res.json({ success: true, applications: licenseController.fetchPendingQueue() });
   });
 
-  router.get('/verifications/:appId', (req, res) => {
+  router.get('/verifications/:appId', requireUserAdmin, (req, res) => {
     const application = licenseController.getApplicationDetails(req.params.appId);
     res.status(application ? 200 : 404).json(application
       ? { success: true, application }
       : { success: false, message: 'Verification application not found' });
   });
 
-  router.post('/verifications/:appId/approve', (req, res) => {
+  router.get('/verifications/:appId/document', requireUserAdmin, (req, res) => {
+    const document = VerificationApp.findDocumentById(req.params.appId);
+    if (!document || !document.data) {
+      return res.status(404).json({ success: false, message: 'License document not found' });
+    }
+    res.set('Content-Type', document.mimeType || 'application/octet-stream');
+    res.set('Content-Disposition', `inline; filename="${document.fileName.replace(/["\\]/g, '_')}"`);
+    res.set('X-Content-Type-Options', 'nosniff');
+    return res.send(Buffer.from(document.data));
+  });
+
+  router.post('/verifications/:appId/approve', requireUserAdmin, (req, res) => {
     const result = licenseController.approveLicense(req.params.appId);
     res.status(result.success ? 200 : 400).json(result);
   });
 
-  router.post('/verifications/:appId/reject', (req, res) => {
+  router.post('/verifications/:appId/reject', requireUserAdmin, (req, res) => {
     const result = licenseController.rejectLicense(req.params.appId, req.body?.reason);
     res.status(result.success ? 200 : 400).json(result);
   });
