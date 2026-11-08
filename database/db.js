@@ -26,6 +26,10 @@ function createDatabase(file = DEFAULT_DB_FILE) {
   for (const [name, definition] of migrations) {
     if (!columns.includes(name)) db.exec(`ALTER TABLE user_account ADD COLUMN ${name} ${definition}`);
   }
+  const idpColumns = db.prepare('PRAGMA table_info(idp)').all().map((column) => column.name);
+  if (!idpColumns.includes('view_count')) {
+    db.exec('ALTER TABLE idp ADD COLUMN view_count INTEGER NOT NULL DEFAULT 0');
+  }
   return db;
 }
 

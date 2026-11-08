@@ -6,17 +6,22 @@ const Favourite = require('../entity/Favourite');
 const UserAccount = require('../entity/UserAccount');
 const SaveFavouriteController = require('../controller/SaveFavouriteController');
 const ViewFavouritesController = require('../controller/ViewFavouritesController');
+const TrackInteractionRateController = require('../controller/TrackInteractionRateController');
 
 function favouriteRoutes(db) {
   const router = express.Router();
   const userAccount = new UserAccount(db);
   const controller = new SaveFavouriteController(new Favourite(db), new IDP(db));
   const viewController = new ViewFavouritesController(new Favourite(db));
+  const interactionController = new TrackInteractionRateController(db, userAccount);
 
   // #6 Save an IDP to the logged-in customer's favourites
   router.post('/:idpId', (req, res) => {
     const user = userAccount.findById(req.get('X-User-Id'));
     const result = controller.saveFavourite(user, req.params.idpId);
+    if (result.success && !result.alreadySaved && user?.profile === 'Customer') {
+      interactionController.logInteraction(user.id, req.params.idpId, 'favourite');
+    }
     res.status(result.success ? 200 : 400).json(result);
   });
 

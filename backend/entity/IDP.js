@@ -38,6 +38,13 @@ class IDP {
     return row ? IDP.fromRow(row) : null;
   }
 
+  incrementViewCount(idpId) {
+    const result = this.db.prepare(
+      'UPDATE idp SET view_count = view_count + 1 WHERE id = ?'
+    ).run(Number(idpId));
+    return result.changes > 0;
+  }
+
   getIDPsByDesigner(designerId) {
     return this.db
       .prepare(`${IDP.SELECT} WHERE i.designer_id = ? ORDER BY i.created_at DESC, i.id DESC`)
@@ -144,6 +151,7 @@ class IDP {
   static fromRow(row) {
     return {
       id: row.id,
+      idpId: row.id,
       designerId: row.designer_id,
       designerName: row.designer_name,
       title: row.title,
@@ -154,6 +162,7 @@ class IDP {
       visibility: row.visibility,
       style: row.style,
       type: JSON.parse(row.type),
+      viewCount: Number(row.view_count ?? 0),
       createdAt: row.created_at,
       coverMediaId: row.cover_media_id,
     };

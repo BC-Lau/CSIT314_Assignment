@@ -18,6 +18,7 @@ const MENU = {
   ],
   'Platform Manager': [
     { title: 'Connected customers', text: 'Customers who contacted designers (#25)', href: '/metrics.html', ready: true },
+    { title: 'IDP interaction rate', text: 'Views and customer interactions for each IDP', href: '/idp-interaction-rate.html', ready: true },
     { title: 'Reports', text: 'Daily, weekly and monthly reports' },
     { title: 'IDP categories', text: 'Manage the preset tags' },
   ],
