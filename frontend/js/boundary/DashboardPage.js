@@ -21,7 +21,7 @@ const MENU = {
     { title: 'IDP categories', text: 'Manage the preset tags' },
   ],
   'User Admin': [
-    { title: 'User accounts', text: 'Create, view, update and suspend accounts' },
+    { title: 'User accounts', text: 'Create, view, update and suspend accounts', href: '/user-accounts.html', ready: true },
     { title: 'User profiles', text: 'Manage the four user types' },
   ],
 };

@@ -14,6 +14,18 @@ function createDatabase(file = DEFAULT_DB_FILE) {
   const db = new DatabaseSync(file);
   db.exec('PRAGMA foreign_keys = ON;');
   db.exec(fs.readFileSync(SCHEMA_FILE, 'utf8'));
+
+  const columns = db.prepare('PRAGMA table_info(user_account)').all().map((column) => column.name);
+  const migrations = [
+    ['is_active', 'INTEGER NOT NULL DEFAULT 1'],
+    ['is_locked', 'INTEGER NOT NULL DEFAULT 0'],
+    ['security_incident_count', 'INTEGER NOT NULL DEFAULT 0'],
+    ['is_verified', 'INTEGER NOT NULL DEFAULT 0'],
+    ['has_verified_badge', 'INTEGER NOT NULL DEFAULT 0']
+  ];
+  for (const [name, definition] of migrations) {
+    if (!columns.includes(name)) db.exec(`ALTER TABLE user_account ADD COLUMN ${name} ${definition}`);
+  }
   return db;
 }
 
