@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IDP Tag Management · InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <div class="page-heading">
+      <div>
+        <a class="muted back-link" href="/dashboard.html">← Dashboard</a>
+        <h1>IDP tag management</h1>
+        <p class="muted">Manage preset styles and room types. Enter one tag per line; tags must contain one or two words.</p>
+      </div>
+    </div>
+    <p id="pageMessage" class="message" role="status" aria-live="polite"></p>
+    <div class="grid-two">
+      <section class="card">
+        <h2>Add tags</h2>
+        <form id="addTagsForm">
+          <label for="addCategory">Tag category</label>
+          <select id="addCategory" required>
+            <option value="style">Styles</option>
+            <option value="type">Room types</option>
+          </select>
+          <label for="newTags">New tags (one per line)</label>
+          <textarea id="newTags" rows="7" placeholder="e.g.&#10;Art Deco&#10;Coastal" required></textarea>
+          <p class="muted">Existing tags are checked across both categories. Duplicate entries in this submission are also rejected.</p>
+          <div class="form-actions"><button class="btn" type="submit">Validate and add tags</button></div>
+        </form>
+        <div id="addResults" class="tag-results" aria-live="polite"></div>
+      </section>
+      <section class="card">
+        <h2>Delete tags</h2>
+        <label for="deleteCategory">Tag category</label>
+        <select id="deleteCategory">
+          <option value="style">Styles</option>
+          <option value="type">Room types</option>
+        </select>
+        <p class="muted">Select one or more tags. Deleting a style clears that style on existing IDPs; deleting a room type removes it from their saved type lists.</p>
+        <div id="tagChoices" class="tag-choice-list"><p class="muted">Loading tags…</p></div>
+        <div class="form-actions"><button id="deleteTagsBtn" class="btn danger" type="button">Delete selected tags</button></div>
+      </section>
+    </div>
+    <section class="card tag-inventory">
+      <div class="page-heading compact"><h2>Current tags</h2><button id="refreshTagsBtn" class="btn secondary" type="button">Refresh</button></div>
+      <div class="grid-two">
+        <div><h3>Styles</h3><div id="styleInventory" class="tag-group"></div></div>
+        <div><h3>Room types</h3><div id="typeInventory" class="tag-group"></div></div>
+      </div>
+    </section>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/AdminIDPTagsPage.js"></script>
+  <script>new AdminIDPTagsPage().init();</script>
+</body>
+</html>
