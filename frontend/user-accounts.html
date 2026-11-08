@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Accounts · InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <div class="page-heading">
+      <div>
+        <a class="muted back-link" href="/dashboard.html">← Dashboard</a>
+        <h1>User account management</h1>
+        <p class="muted">Create accounts and manage access, passwords, suspension and security locks.</p>
+      </div>
+      <button id="createAccountBtn" class="btn" type="button">Create account</button>
+    </div>
+
+    <section class="card account-toolbar">
+      <div class="search-control">
+        <input id="accountSearch" type="search" placeholder="Username or email">
+        <button id="searchAccountsBtn" class="btn" type="button">Search</button>
+      </div>
+      <label for="statusFilter">Status</label>
+      <select id="statusFilter">
+        <option value="all">All statuses</option>
+        <option value="active">Active</option>
+        <option value="suspended">Suspended</option>
+        <option value="locked">Locked</option>
+      </select>
+    </section>
+
+    <p id="message" class="message" role="status"></p>
+    <div class="table-wrap card account-table-wrap">
+      <table class="account-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Profile</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="accountRows"></tbody>
+      </table>
+    </div>
+
+    <div id="accountModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
+      <div class="modal-panel card">
+        <div class="page-heading compact">
+          <h2 id="accountModalTitle">Create account</h2>
+          <button id="closeAccountModal" class="btn secondary" type="button" aria-label="Close">×</button>
+        </div>
+        <form id="accountForm">
+          <input id="accountId" type="hidden">
+          <label for="accountUsername">Username</label>
+          <input id="accountUsername" required maxlength="100">
+          <label for="accountEmail">Email</label>
+          <input id="accountEmail" type="email">
+          <div id="passwordField">
+            <label for="accountPassword">Password</label>
+            <input id="accountPassword" type="password" minlength="8">
+          </div>
+          <label for="accountProfile">Profile</label>
+          <select id="accountProfile" required></select>
+          <p id="accountFormMessage" class="message" role="status"></p>
+          <div class="form-actions">
+            <button class="btn secondary" id="cancelAccountForm" type="button">Cancel</button>
+            <button class="btn" type="submit" id="saveAccountBtn">Create account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="passwordModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="passwordModalTitle">
+      <div class="modal-panel card narrow-modal">
+        <h2 id="passwordModalTitle">Reset password</h2>
+        <form id="passwordForm">
+          <input id="passwordUserId" type="hidden">
+          <label for="newPassword">New password</label>
+          <input id="newPassword" type="password" minlength="8" required>
+          <p id="passwordFormMessage" class="message" role="status"></p>
+          <div class="form-actions">
+            <button class="btn secondary" id="cancelPasswordForm" type="button">Cancel</button>
+            <button class="btn" type="submit">Reset password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/UserAccountsPage.js"></script>
+  <script>new UserAccountsPage().init();</script>
+</body>
+</html>
