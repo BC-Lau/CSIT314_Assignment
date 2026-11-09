@@ -45,7 +45,7 @@ class ViewIDPPage {
       box.append(availabilitySection);
 
       const availabilityPage =
-        new CustomerAvailabilityPage(availabilitySection);
+        new CustomerAvailabilityPage(availabilitySection, idp.id);
 
       availabilityPage.displaySlots(idp.designerId);
       box.append(this.displayContactForm(idp));

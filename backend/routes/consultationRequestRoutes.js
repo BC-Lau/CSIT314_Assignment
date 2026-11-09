@@ -5,6 +5,8 @@ const UserAccount = require('../entity/UserAccount');
 const ConsultationRequest = require('../entity/ConsultationRequest');
 const ConsultationRequestController =
   require('../controller/ConsultationRequestController');
+const TrackInteractionRateController =
+  require('../controller/TrackInteractionRateController');
 
 /**
  * ROUTES: User Story #3
@@ -14,7 +16,8 @@ function consultationRequestRoutes(db) {
   const router = express.Router();
 
   const users = new UserAccount(db);
-  const requests = new ConsultationRequest(db);
+  const interactions = new TrackInteractionRateController(db, users);
+  const requests = new ConsultationRequest(db, interactions);
   const controller = new ConsultationRequestController(requests);
 
   // POST /api/consultation-requests
@@ -24,7 +27,8 @@ function consultationRequestRoutes(db) {
     const result = controller.requestConsultation(
       user,
       req.body?.slotID,
-      req.body?.message ?? ''
+      req.body?.message ?? '',
+      req.body?.idpId ?? null
     );
 
     return res.status(result.status).json({

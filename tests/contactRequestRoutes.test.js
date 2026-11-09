@@ -17,6 +17,7 @@ test('customers can contact an IDP designer and only that designer can view the 
   const designerId = addUser('contact_designer', 'Interior Designer');
   const otherDesignerId = addUser('other_contact_designer', 'Interior Designer');
   const customerId = addUser('contact_customer', 'Customer', 'customer@example.com');
+  const managerId = addUser('contact_metrics_manager', 'Platform Manager');
   const idpId = Number(db.prepare(`
     INSERT INTO idp (designer_id, title, description, style, type)
     VALUES (?, 'Warm kitchen', 'A kitchen renovation', 'Modern', '["Kitchen"]')
@@ -77,7 +78,38 @@ test('customers can contact an IDP designer and only that designer can view the 
     assert.equal(otherInbox.data.requests[0].message, 'I would like to discuss a living room renovation.');
     assert.equal((await request('GET', '/designer', customerId)).status, 403);
     assert.equal((await request('GET', '/designer', null)).status, 401);
-    assert.equal(db.prepare('SELECT COUNT(*) AS count FROM contact_request').get().count, 2);
+    const noProjectMessage = await request('POST', '/', customerId, {
+      designerId,
+      message: 'I would like to discuss a project generally.'
+    });
+    assert.equal(noProjectMessage.status, 201);
+    assert.equal(db.prepare('SELECT COUNT(*) AS count FROM contact_request').get().count, 3);
+    assert.deepEqual(
+      db.prepare('SELECT idp_id AS idpId, interaction_type AS type FROM interaction_log ORDER BY idp_id')
+        .all().map((row) => ({ ...row })),
+      [
+        { idpId, type: 'message' },
+        { idpId: otherIDPId, type: 'message' }
+      ]
+    );
+
+    const commentTelemetry = await fetch(`http://127.0.0.1:${server.address().port}/api/telemetry/log`, {
+      method: 'POST',
+      headers: { 'X-User-Id': String(customerId), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idpId, type: 'comment' })
+    });
+    assert.equal(commentTelemetry.status, 400);
+    const viewTelemetry = await fetch(`http://127.0.0.1:${server.address().port}/api/telemetry/log`, {
+      method: 'POST',
+      headers: { 'X-User-Id': String(customerId), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idpId, type: 'view' })
+    });
+    assert.equal(viewTelemetry.status, 201);
+    const commentFilter = await fetch(
+      `http://127.0.0.1:${server.address().port}/api/metrics/idp-interaction-rate?interactionType=comment`,
+      { headers: { 'X-User-Id': String(managerId) } }
+    );
+    assert.equal(commentFilter.status, 400);
   } finally {
     await new Promise((resolve, reject) => {
       server.close((error) => error ? reject(error) : resolve());

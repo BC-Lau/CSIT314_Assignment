@@ -7,6 +7,38 @@ const path = require('node:path');
 const DEFAULT_DB_FILE = path.join(__dirname, 'app.db');
 const SCHEMA_FILE = path.join(__dirname, 'schema.sql');
 
+function migrateInteractionLogTypes(db) {
+  const table = db.prepare(
+    "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'interaction_log'"
+  ).get();
+  if (!table?.sql?.includes("'comment'")) return;
+
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    db.exec(`CREATE TABLE interaction_log_replacement (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      customer_id INTEGER NOT NULL REFERENCES user_account(id),
+      idp_id INTEGER NOT NULL REFERENCES idp(id) ON DELETE CASCADE,
+      interaction_type TEXT NOT NULL CHECK (
+        interaction_type IN ('view', 'favourite', 'message', 'consultation_request')
+      ),
+      timestamp TEXT NOT NULL DEFAULT (datetime('now'))
+    )`);
+    db.exec(`INSERT INTO interaction_log_replacement
+      (id, customer_id, idp_id, interaction_type, timestamp)
+      SELECT id, customer_id, idp_id, interaction_type, timestamp
+      FROM interaction_log
+      WHERE interaction_type != 'comment'`);
+    db.exec('DROP TABLE interaction_log');
+    db.exec('ALTER TABLE interaction_log_replacement RENAME TO interaction_log');
+    db.exec('CREATE INDEX IF NOT EXISTS idx_interaction_log_idp_time ON interaction_log(idp_id, timestamp)');
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+}
+
 /**
  * @param {string} file  path to the .db file, or ':memory:' for tests
  */
@@ -14,6 +46,7 @@ function createDatabase(file = DEFAULT_DB_FILE) {
   const db = new DatabaseSync(file);
   db.exec('PRAGMA foreign_keys = ON;');
   db.exec(fs.readFileSync(SCHEMA_FILE, 'utf8'));
+  migrateInteractionLogTypes(db);
 
   const columns = db.prepare('PRAGMA table_info(user_account)').all().map((column) => column.name);
   const migrations = [
@@ -41,4 +74,4 @@ function createDatabase(file = DEFAULT_DB_FILE) {
   return db;
 }
 
-module.exports = { createDatabase };
+module.exports = { createDatabase, migrateInteractionLogTypes };
