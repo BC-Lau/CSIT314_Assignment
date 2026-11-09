@@ -20,7 +20,7 @@ function setup() {
   });
   db.prepare(`
     INSERT INTO idp (designer_id, title, description, visibility, style, type, view_count)
-    VALUES (?, 'Modern Apartment', 'Description', 'public', 'Modern', '["Kitchen"]', 100)
+    VALUES (?, 'Modern Apartment', 'Description', 'public', 'Modern', '["Kitchen"]', 1)
   `).run(designerId);
   const idpId = Number(db.prepare('SELECT last_insert_rowid() AS id').get().id);
   return { db, customerId, idpId, controller: new TrackInteractionRateController(db, accounts) };
@@ -41,12 +41,18 @@ test('generates interaction-rate analytics for published IDPs', () => {
   assert.equal(controller.logInteraction(customerId, idpId, 'consultation_request'), true);
   assert.equal(controller.logInteraction(customerId, idpId, 'comment'), false);
 
+  db.prepare(`
+    INSERT INTO interaction_log (customer_id, idp_id, interaction_type, timestamp)
+    VALUES (?, ?, 'view', '2020-01-01 10:00:00'),
+           (?, ?, 'view', '2020-01-02 10:00:00')
+  `).run(customerId, idpId, customerId, idpId);
+
   const report = controller.generateAnalyticsReport('all', '');
   const metric = report.metricsData.find((item) => item.idpId === idpId);
   assert.ok(metric);
-  assert.equal(metric.viewCount, 100);
+  assert.equal(metric.viewCount, 3);
   assert.equal(metric.interactionCount, 3);
-  assert.equal(metric.interactionRate, 3);
+  assert.equal(metric.interactionRate, 100);
 
   const filtered = controller.generateAnalyticsReport('all', 'Modern');
   assert.equal(filtered.metricsData.length, 1);
