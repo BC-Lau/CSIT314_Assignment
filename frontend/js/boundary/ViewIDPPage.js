@@ -48,7 +48,97 @@ class ViewIDPPage {
         new CustomerAvailabilityPage(availabilitySection);
 
       availabilityPage.displaySlots(idp.designerId);
+      box.append(this.displayContactForm(idp));
     }
+  }
+
+  displayContactForm(idp) {
+    const section = el('section', { className: 'card contact-form' },
+      el('h2', { textContent: `Contact ${idp.designerName}` }),
+      el('p', { className: 'muted', textContent: 'Share your renovation ideas and the designer will get back to you.' })
+    );
+    const form = el('form');
+    const message = el('textarea', {
+      name: 'message',
+      required: true,
+      maxLength: 2000,
+      placeholder: 'Tell the designer what you have in mind…'
+    });
+    const feedback = el('p', { className: 'message hidden', role: 'status', ariaLive: 'polite' });
+    const submit = el('button', { className: 'btn', type: 'submit', textContent: 'Send message' });
+
+    form.append(
+      el('label', { htmlFor: 'contactMessage', textContent: 'Your message' }),
+      Object.assign(message, { id: 'contactMessage' }),
+      submit,
+      feedback
+    );
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      feedback.className = 'message hidden';
+      submit.disabled = true;
+      try {
+        const result = await Api.post('/api/contact-requests', {
+          designerId: idp.designerId,
+          idpId: idp.id,
+          message: message.value
+        });
+        if (result.success) {
+          form.reset();
+          this.showContactSuccess(submit);
+        } else {
+          feedback.textContent = result.message ?? 'Could not send your message';
+          feedback.className = 'message error';
+        }
+      } catch {
+        feedback.textContent = 'Could not send your message. Please try again.';
+        feedback.className = 'message error';
+      } finally {
+        submit.disabled = false;
+      }
+    });
+    section.append(form);
+    return section;
+  }
+
+  showContactSuccess(returnFocusTo) {
+    const modal = el('div', {
+      className: 'modal',
+      role: 'alertdialog',
+      ariaModal: 'true',
+      ariaLabelledby: 'contactSuccessTitle',
+      ariaDescribedby: 'contactSuccessDescription'
+    });
+    const closeButton = el('button', {
+      className: 'btn',
+      type: 'button',
+      textContent: 'Done'
+    });
+    const close = () => {
+      document.removeEventListener('keydown', onKeyDown);
+      modal.remove();
+      returnFocusTo.focus();
+    };
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') close();
+    };
+
+    modal.append(el('div', { className: 'modal-panel card narrow-modal contact-success-panel' },
+      el('div', { className: 'contact-success-mark', ariaHidden: 'true', textContent: '✓' }),
+      el('h2', { id: 'contactSuccessTitle', textContent: 'Message sent successfully' }),
+      el('p', {
+        id: 'contactSuccessDescription',
+        textContent: 'Your message has been sent to the designer. They can follow up with you about your renovation ideas.'
+      }),
+      closeButton
+    ));
+    closeButton.addEventListener('click', close);
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) close();
+    });
+    document.addEventListener('keydown', onKeyDown);
+    document.body.append(modal);
+    closeButton.focus();
   }
 
 
