@@ -6,6 +6,7 @@ const path = require('node:path');
 const { createDatabase } = require('./db');
 const { hashPassword } = require('../backend/utils/password');
 const { loadPresetTags } = require('./presetTags');
+const { seedInteractionLogs } = require('./seedInteractions');
 
 const DB_FILE = path.join(__dirname, 'app.db');
 const PASSWORD = 'password123';
@@ -90,12 +91,15 @@ for (let i = 0; i < COUNTS.idps; i++) {
   idps.push(id);
 }
 
+const publicIdps = db.prepare("SELECT id FROM idp WHERE visibility = 'public'").all()
+  .map((row) => Number(row.id));
+
 // Contact requests (#25): any day between the IDP being posted and today,
 // so newer months have more contacts (more IDPs online)
 const insertContact = db.prepare('INSERT INTO contact_request (customer_id, designer_id, idp_id, message, created_at) VALUES (?, ?, ?, ?, ?)');
 const idpInfo = db.prepare('SELECT designer_id, created_at FROM idp WHERE id = ?');
 for (let i = 0; i < COUNTS.contacts; i++) {
-  const idpId = pick(idps);
+  const idpId = pick(publicIdps);
   const idp = idpInfo.get(idpId);
   const idpAgeDays = (Date.now() - Date.parse(`${idp.created_at.replace(' ', 'T')}Z`)) / 86400000;
   insertContact.run(pick(users.Customer), idp.designer_id, idpId,
@@ -108,8 +112,10 @@ for (let i = 0; i < COUNTS.contacts; i++) {
 const insertFavourite = db.prepare('INSERT OR IGNORE INTO favourite (user_id, idp_id, saved_at) VALUES (?, ?, ?)');
 users.Customer.forEach((customerId, index) => {
   const howMany = index === 0 ? 6 : index === 1 ? 0 : int(0, 8);
-  for (const idpId of pickSome(idps, howMany)) insertFavourite.run(customerId, idpId, daysAgo(60));
+  for (const idpId of pickSome(publicIdps, howMany)) insertFavourite.run(customerId, idpId, daysAgo(60));
 });
+
+seedInteractionLogs(db);
 
 const { seedMedia } = require('./seedMedia');
 const seededMedia = seedMedia(db);
