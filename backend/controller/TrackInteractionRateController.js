@@ -50,7 +50,7 @@ class TrackInteractionRateController {
       params.push(catId);
     }
     const idps = this.db.prepare(`
-      SELECT id, title, style, COALESCE(view_count, 0) AS view_count
+      SELECT id, title, style
       FROM idp i WHERE visibility = 'public'${categoryFilter}
       ORDER BY title
     `).all(...params);
@@ -61,9 +61,7 @@ class TrackInteractionRateController {
         if (!InteractionLog.idpInteractionTypes.includes(log.interactionType)) return false;
         return !interactionType || interactionType === 'all' || log.interactionType === interactionType;
       }).length;
-      const views = period === 'all'
-        ? Number(idp.view_count) || logs.filter((log) => log.interactionType === 'view').length
-        : logs.filter((log) => log.interactionType === 'view').length;
+      const views = logs.filter((log) => log.interactionType === 'view').length;
       report.addMetric(idp.id, idp.title, views, interactions, this.computeIdpInteractionRate(interactions, views));
     }
     report.metricsData.sort((a, b) => b.interactionRate - a.interactionRate || b.interactionCount - a.interactionCount);
