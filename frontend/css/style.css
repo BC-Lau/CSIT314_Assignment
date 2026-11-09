@@ -83,6 +83,8 @@ main { max-width: 1080px; margin: 0 auto; padding: 28px 20px 60px; }
 label { display: block; font-weight: 600; font-size: .92rem; margin: 14px 0 4px; }
 label .opt { font-weight: 400; color: var(--muted); }
 input, select, textarea { width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; font: inherit; background: #fff; }
+#duration, #styleTag { box-sizing: border-box; }
+#styleTag { appearance: none; }
 textarea { min-height: 120px; resize: vertical; }
 input:focus, select:focus, textarea:focus, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0 16px; }
