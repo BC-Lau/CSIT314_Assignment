@@ -31,6 +31,8 @@ class FilterIDPPage {
     const result = await Api.get(`/api/filter/idps?${query}`);
     if (!result.success) return this.displayInvalidFilter(result.message);
     if (result.idps.length === 0) return this.displayNoResults();
+    this.canSave = this.account.profile === 'Customer'; // #6 only Customers can save
+    this.saved = this.canSave ? await loadSavedIDPIds() : new Set();
     this.displayResults(result.idps);
   }
 
@@ -39,7 +41,7 @@ class FilterIDPPage {
     document.getElementById('count').textContent = `${idps.length} project${idps.length === 1 ? '' : 's'} found`;
     const grid = document.getElementById('results');
     grid.textContent = '';
-    for (const idp of idps) grid.append(drawIDPCard(idp));
+    for (const idp of idps) grid.append(drawIDPCard(idp, { showSave: this.canSave, saved: this.saved.has(idp.id) }));
   }
 
   displayNoResults() {
