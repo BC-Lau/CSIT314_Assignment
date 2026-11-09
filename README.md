@@ -29,8 +29,9 @@ Demo accounts (password `password123`): `designer1`, `customer1`, `manager1`, `a
 | Filter IDPs (#2) | `frontend/filter-idps.html` | Customer |
 | Save IDP to favourites (#6) | Save button on IDP cards (home page, Recommended IDPs) | Customer |
 | My favourites (#7) | `frontend/my-favourites.html` | Customer |
-| Contact a designer | Message form on a project detail page (`frontend/idp-view.html`) | Customer |
+| Contact a designer (#47) | Message form on a project detail page (`frontend/idp-view.html`) | Customer |
 | Customer messages | `frontend/designer-contacts.html` | Interior Designer |
+| Daily, weekly, monthly and yearly activity reports (#38, #39, #40) | `frontend/reports.html` | Platform Manager |
 
 ## Folder structure
 ```

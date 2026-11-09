@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Platform activity reports · InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <p><a href="/dashboard.html">← Back to dashboard</a></p>
+    <h1>Platform activity reports</h1>
+    <p class="muted">Review customer, designer, project, consultation and IDP interaction activity by day, week, month or year (#38, #39, #40).</p>
+
+    <form id="reportForm" class="card form-page">
+      <div class="row">
+        <div>
+          <label for="reportPeriod">Report period</label>
+          <select id="reportPeriod" required>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly (Monday–Sunday)</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+        <div>
+          <label for="reportDate">Date in period</label>
+          <input type="date" id="reportDate" required>
+        </div>
+      </div>
+      <p style="margin-top:16px"><button type="submit" class="btn" id="showReport">Generate report</button></p>
+    </form>
+
+    <p id="reportMessage" class="message hidden" role="status" aria-live="polite"></p>
+    <section id="reportResults" class="card report-results hidden" aria-live="polite">
+      <h2 id="reportTitle"></h2>
+      <p id="reportGenerated" class="muted"></p>
+      <div id="reportMetrics" class="report-metrics"></div>
+    </section>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/PlatformReportsPage.js"></script>
+  <script>new PlatformReportsPage().init();</script>
+</body>
+</html>

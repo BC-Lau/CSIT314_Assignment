@@ -143,6 +143,11 @@ a.idp-card:hover { border-color: var(--accent); }
 .metric-table { width: 100%; border-collapse: collapse; }
 .metric-table th, .metric-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
 .metric-table td:last-child, .metric-table th:last-child { text-align: right; }
+.report-results { margin-top: 20px; }
+.report-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 16px; }
+.report-metric { display: grid; gap: 4px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.report-metric strong { color: var(--accent-dark); font-size: 1.8rem; }
+.report-metric span { color: var(--muted); }
 /* #25 trend: line chart + table */
 .trend-chart { width: 100%; height: auto; margin-top: 12px; }
 .trend-chart text { font-size: 11px; fill: var(--muted); }

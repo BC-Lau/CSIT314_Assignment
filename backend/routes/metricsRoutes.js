@@ -7,6 +7,8 @@ const ConnectedCustomersController = require('../controller/ConnectedCustomersCo
 const ConnectedCustomersTrendController = require('../controller/ConnectedCustomersTrendController');
 const AddDemoContactsController = require('../controller/AddDemoContactsController');
 const TrackInteractionRateController = require('../controller/TrackInteractionRateController');
+const PlatformActivityReport = require('../entity/PlatformActivityReport');
+const PlatformActivityReportController = require('../controller/PlatformActivityReportController');
 
 function metricsRoutes(db) {
   const router = express.Router();
@@ -15,6 +17,7 @@ function metricsRoutes(db) {
   const trendController = new ConnectedCustomersTrendController(new ContactRequest(db));
   const demoController = new AddDemoContactsController(new ContactRequest(db));
   const interactionController = new TrackInteractionRateController(db, userAccount);
+  const activityReportController = new PlatformActivityReportController(new PlatformActivityReport(db));
 
   const logTelemetry = (req, res) => {
     const user = userAccount.findById(req.get('X-User-Id'));
@@ -51,6 +54,17 @@ function metricsRoutes(db) {
   };
   router.get('/idp-interaction-rate', getIdpInteractionRate);
   router.get('/interaction-rate', getIdpInteractionRate);
+
+  // GET /api/metrics/reports?period=daily|weekly|monthly|yearly&date=YYYY-MM-DD
+  router.get('/reports', (req, res) => {
+    const result = activityReportController.getReport(
+      userAccount.findById(req.get('X-User-Id')),
+      req.query.period,
+      req.query.date
+    );
+    const { status, ...body } = result;
+    return res.status(status).json(body);
+  });
 
   // GET /api/metrics/connected-customers?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD (both optional)
   router.get('/connected-customers', (req, res) => {
