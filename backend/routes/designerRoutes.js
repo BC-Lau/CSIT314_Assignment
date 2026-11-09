@@ -3,6 +3,7 @@ const UserAccount = require('../entity/UserAccount');
 const VerificationApp = require('../entity/VerificationApp');
 const SubmitLicenseController = require('../controller/SubmitLicenseController');
 
+// #48: Designer-only endpoints for submitting, viewing, and retrieving license evidence.
 function designerRoutes(db) {
   const router = express.Router();
   const userAccount = new UserAccount(db);

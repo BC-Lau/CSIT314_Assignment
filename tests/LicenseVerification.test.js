@@ -6,6 +6,7 @@ const UserAccount = require('../backend/entity/UserAccount');
 const VerificationApp = require('../backend/entity/VerificationApp');
 const { createTestDatabase, profileId } = require('./helpers');
 
+// #48 integration tests cover submission, admin review, outcomes, and the #13 publishing gate.
 async function setup(t) {
   const db = createTestDatabase();
   const accounts = new UserAccount(db);

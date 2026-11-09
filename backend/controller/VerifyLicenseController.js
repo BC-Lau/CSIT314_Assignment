@@ -1,6 +1,7 @@
 const VerificationApp = require('../entity/VerificationApp');
 const Notification = require('../entity/Notification');
 
+// #48: Give User Admins the queue, application details, and review decisions.
 class VerifyLicenseController {
   constructor(userAccount) {
     this.userAccount = userAccount;

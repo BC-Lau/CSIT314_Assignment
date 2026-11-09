@@ -86,6 +86,7 @@ function adminRoutes(db) {
     res.status(result.success ? 200 : 400).json(result);
   });
 
+  // #48: User Admin-only license application queue, document access, and decisions.
   router.get('/verifications/pending', requireUserAdmin, (req, res) => {
     res.json({ success: true, applications: licenseController.fetchPendingQueue() });
   });

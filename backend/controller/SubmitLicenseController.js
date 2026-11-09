@@ -5,6 +5,7 @@ const ALLOWED_LICENSE_MIME_TYPES = new Set([
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 ]);
 
+// #48: Validate and track license applications submitted by Interior Designers.
 class SubmitLicenseController {
   constructor(userAccount) {
     this.userAccount = userAccount;
