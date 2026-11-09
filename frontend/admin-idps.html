@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage IDPs · InteriorMatch</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <div class="page-heading">
+      <div>
+        <a class="muted back-link" href="/dashboard.html">← Dashboard</a>
+        <h1>Manage Interior Design Projects</h1>
+        <p class="muted">Review all IDPs and suspend, remove or reactivate individual projects.</p>
+      </div>
+      <button id="refreshIDPs" class="btn secondary" type="button">Refresh</button>
+    </div>
+    <p id="idpMessage" class="message" role="status" aria-live="polite"></p>
+    <section class="card">
+      <div class="page-heading compact">
+        <h2>IDP inventory</h2>
+        <label for="idpStatusFilter">Show
+          <select id="idpStatusFilter">
+            <option value="all">All projects</option>
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+            <option value="designer-suspended">Designer account suspended</option>
+          </select>
+        </label>
+      </div>
+      <label for="idpSearch">Search projects or designers</label>
+      <input id="idpSearch" type="search" placeholder="Search by project title or designer name">
+      <div id="idpList" class="moderation-list"><p class="muted">Loading projects…</p></div>
+    </section>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/boundary/AdminIDPsPage.js"></script>
+  <script>new AdminIDPsPage().init();</script>
+</body>
+</html>

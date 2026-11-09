@@ -6,8 +6,9 @@ const toNumber = (v) => (isBlank(v) ? null : Number(v));
 
 class CreateIDPController {
   /** @param {import('../entity/IDP')} idp */
-  constructor(idp) {
+  constructor(idp, moderation = null) {
     this.idp = idp;
+    this.moderation = moderation;
   }
 
   getTagOptions() {
@@ -62,6 +63,7 @@ class CreateIDPController {
       style: idpData.style,
       type: [...new Set(type)],
     });
+    if (this.moderation) this.moderation.inspectIDP(newIDP);
     return { success: true, idp: newIDP };
   }
 }

@@ -8,12 +8,13 @@ const ViewIDPController = require('../controller/ViewIDPController');
 const ViewMyIDPsController = require('../controller/ViewMyIDPsController');
 const DeleteIDPController = require('../controller/DeleteIDPController');
 const AIService = require('../boundary/AIService');
+const Moderation = require('../entity/Moderation');
 
 function idpRoutes(db, { aiService = new AIService() } = {}) {
   const router = express.Router();
   const idp = new IDP(db);
   const userAccount = new UserAccount(db);
-  const createIDPController = new CreateIDPController(idp);
+  const createIDPController = new CreateIDPController(idp, new Moderation(db));
   const browseIDPController = new BrowseIDPController(idp);
   const suggestTagsController = new SuggestTagsController(idp, aiService);
   const viewIDPController = new ViewIDPController(idp);

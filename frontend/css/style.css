@@ -203,3 +203,12 @@ a.idp-card:hover { border-color: var(--accent); }
 .tag-results ul { margin-top: 4px; padding-left: 22px; }
 .btn.danger { background: var(--danger); color: #fff; }
 @media (max-width: 760px) { .grid-two { grid-template-columns: 1fr; } .tag-choice-list { grid-template-columns: 1fr; } }
+
+/* Suspicious activity moderation */
+.moderation-list { display:grid; gap:14px; }
+.moderation-item { border:1px solid var(--border, #ddd); border-radius:12px; padding:18px; background:var(--card, #fff); }
+.moderation-item.is-suspended { border:2px solid #b42318; background:#fff7f6; }
+.moderation-kind { color:#667085; font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; }
+.suspension-notice { color:#b42318; font-weight:800; letter-spacing:.04em; }
+.btn.warning { background:#9a6700; color:#fff; }
+.account-status.suspended { color:#b42318; background:#fee4e2; font-weight:700; padding:4px 9px; border-radius:20px; }

@@ -13,7 +13,7 @@ class ViewIDPController {
   viewIDP(user, idpId) {
     const idp = this.idp.getIDPById(Number(idpId));
     const isOwner = Boolean(user && idp && idp.designerId === user.id);
-    if (!idp || (idp.visibility === 'private' && !isOwner)) {
+    if (!idp || (idp.isSuspended && !isOwner) || (idp.visibility === 'private' && !isOwner)) {
       return { success: false, message: 'IDP not found' };
     }
     return { success: true, idp, isOwner };

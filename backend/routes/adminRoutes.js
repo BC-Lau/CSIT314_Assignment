@@ -5,6 +5,8 @@ const Notification = require('../entity/Notification');
 const VerifyLicenseController = require('../controller/VerifyLicenseController');
 const ManageUserAccountsController = require('../controller/ManageUserAccountsController');
 const ManageIDPTagsController = require('../controller/ManageIDPTagsController');
+const Moderation = require('../entity/Moderation');
+const IDP = require('../entity/IDP');
 
 function adminRoutes(db) {
   const router = express.Router();
@@ -13,7 +15,9 @@ function adminRoutes(db) {
   Notification.useDatabase(db);
 
   const licenseController = new VerifyLicenseController(userAccount);
-  const accountController = new ManageUserAccountsController(userAccount);
+  const moderation = new Moderation(db);
+  const idp = new IDP(db);
+  const accountController = new ManageUserAccountsController(userAccount, moderation);
   const tagController = new ManageIDPTagsController(db);
   const requirePlatformManager = (req, res, next) => {
     const user = currentUser(req);
@@ -30,6 +34,45 @@ function adminRoutes(db) {
     }
     return next();
   };
+
+  router.get('/moderation/flags', requireUserAdmin, (req, res) => {
+    res.json({ success: true, flags: moderation.list() });
+  });
+  router.post('/moderation/flags/:flagId/:action', requireUserAdmin, (req, res) => {
+    const result = moderation.review(req.params.flagId, req.params.action);
+    res.status(result.success ? 200 : 400).json(result);
+  });
+  router.post('/moderation/designers/:designerId/suspend', requireUserAdmin, (req, res) => {
+    const result = moderation.suspendDesigner(req.params.designerId);
+    res.status(result.success ? 200 : 400).json(result);
+  });
+
+  // User Admin IDP inventory and lifecycle actions.
+  router.get('/idps', requireUserAdmin, (req, res) => {
+    res.json({ success: true, idps: idp.getAllIDPsForAdmin() });
+  });
+  router.post('/idps/:idpId/suspend', requireUserAdmin, (req, res) => {
+    const project = idp.getIDPById(Number(req.params.idpId));
+    if (!project) return res.status(404).json({ success: false, message: 'IDP not found' });
+    if (!idp.setSuspended(project.id, true)) return res.status(400).json({ success: false, message: 'Unable to suspend IDP' });
+    moderation.markIDPSuspended(project.id);
+    return res.json({ success: true, message: 'IDP suspended successfully' });
+  });
+  router.post('/idps/:idpId/reactivate', requireUserAdmin, (req, res) => {
+    const project = idp.getIDPById(Number(req.params.idpId));
+    if (!project) return res.status(404).json({ success: false, message: 'IDP not found' });
+    if (!idp.canReactivate(project.id)) return res.status(400).json({ success: false, message: 'Cannot reactivate an IDP while its Interior Designer account is suspended' });
+    if (!idp.setSuspended(project.id, false)) return res.status(400).json({ success: false, message: 'Unable to reactivate IDP' });
+    moderation.clearIDPFlag(project.id);
+    return res.json({ success: true, message: 'IDP reactivated successfully; moderation flag cleared' });
+  });
+  router.delete('/idps/:idpId', requireUserAdmin, (req, res) => {
+    const project = idp.getIDPById(Number(req.params.idpId));
+    if (!project) return res.status(404).json({ success: false, message: 'IDP not found' });
+    idp.deleteIDP(project.id);
+    moderation.clearIDPFlag(project.id);
+    return res.json({ success: true, message: 'IDP permanently removed' });
+  });
 
   router.get('/tags', requirePlatformManager, (req, res) => {
     res.json({ success: true, ...tagController.list() });

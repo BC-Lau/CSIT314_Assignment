@@ -1,6 +1,7 @@
 class ManageUserAccountsController {
-  constructor(userAccount) {
+  constructor(userAccount, moderation = null) {
     this.userAccount = userAccount;
+    this.moderation = moderation;
   }
 
   requireUserAdmin(user) {
@@ -22,7 +23,9 @@ class ManageUserAccountsController {
     }
     try {
       const id = Number(this.userAccount.createUserAccount({ username, password, email, profileId }));
-      return { success: true, account: this.userAccount.findByIdIncludingInactive(id) };
+      const account = this.userAccount.findByIdIncludingInactive(id);
+      if (this.moderation) this.moderation.inspectCustomer(account);
+      return { success: true, account };
     } catch (error) {
       if (String(error.message).includes('UNIQUE')) {
         return { success: false, message: 'Username already exists' };
@@ -59,9 +62,12 @@ class ManageUserAccountsController {
   reactivateAccount(user, userId) {
     const denied = this.requireUserAdmin(user);
     if (denied) return denied;
-    return this.userAccount.reactivate(userId)
-      ? { success: true, message: 'Account reactivated successfully' }
-      : { success: false, message: 'User account not found' };
+    const reactivated = this.userAccount.reactivate(userId);
+    if (!reactivated) return { success: false, message: 'User account not found' };
+    // Reactivation resolves the customer-account moderation item, so remove it
+    // entirely from the moderation queue only after the account update succeeds.
+    if (this.moderation) this.moderation.clearCustomerFlag(userId);
+    return { success: true, message: 'Account reactivated successfully; moderation flag cleared' };
   }
 
   resetPassword(user, userId, password) {

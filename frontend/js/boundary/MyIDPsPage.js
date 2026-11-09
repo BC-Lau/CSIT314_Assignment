@@ -21,7 +21,10 @@ class MyIDPsPage {
     for (const idp of idps) {
       const deleteBtn = el('button', { className: 'btn secondary', textContent: 'Delete' });
       deleteBtn.addEventListener('click', () => this.clickDeleteIDP(idp));
-      grid.append(el('div', {}, drawIDPCard(idp), deleteBtn));
+      const wrapper = el('div', { className: idp.isSuspended ? 'moderation-item is-suspended' : '' });
+      if (idp.isSuspended) wrapper.append(el('p', { className: 'suspension-notice', textContent: 'SUSPENDED — this IDP is hidden from customers.' }));
+      wrapper.append(drawIDPCard(idp), deleteBtn);
+      grid.append(wrapper);
     }
   }
 
