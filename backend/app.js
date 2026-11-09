@@ -9,6 +9,7 @@ const metricsRoutes = require('./routes/metricsRoutes');
 const favouriteRoutes = require('./routes/favouriteRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
 const filterRoutes = require('./routes/filterRoutes');
+const contactRequestRoutes = require('./routes/contactRequestRoutes');
 
 // User Stories #20 and #3
 const availabilityRoutes = require('./routes/availabilityRoutes');
@@ -32,6 +33,7 @@ function createApp(db) {
   app.use('/api/favourites', favouriteRoutes(db));
   app.use('/api/idps', mediaRoutes(db));
   app.use('/api/filter', filterRoutes(db));
+  app.use('/api/contact-requests', contactRequestRoutes(db));
 
   // User Stories #20 and #3
   app.use('/api/availability', availabilityRoutes(db));

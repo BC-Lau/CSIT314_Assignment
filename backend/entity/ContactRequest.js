@@ -4,6 +4,43 @@ class ContactRequest {
     this.db = db;
   }
 
+  isActiveDesigner(designerId) {
+    return Boolean(this.db.prepare(`
+      SELECT 1
+        FROM user_account a
+        JOIN user_profile p ON p.id = a.profile_id
+       WHERE a.id = ? AND a.is_active = 1 AND p.name = 'Interior Designer'
+    `).get(designerId));
+  }
+
+  hasPublicIDP(idpId, designerId) {
+    return Boolean(this.db.prepare(`
+      SELECT 1 FROM idp
+       WHERE id = ? AND designer_id = ? AND visibility = 'public'
+    `).get(idpId, designerId));
+  }
+
+  createRequest(customerId, designerId, idpId, message) {
+    const result = this.db.prepare(`
+      INSERT INTO contact_request (customer_id, designer_id, idp_id, message)
+      VALUES (?, ?, ?, ?)
+    `).run(customerId, designerId, idpId, message);
+    return Number(result.lastInsertRowid);
+  }
+
+  getRequestsForDesigner(designerId) {
+    return this.db.prepare(`
+      SELECT c.id, c.message, c.created_at AS createdAt,
+             c.idp_id AS idpId, i.title AS idpTitle,
+             a.username AS customerName, a.email AS customerEmail
+        FROM contact_request c
+        JOIN user_account a ON a.id = c.customer_id
+        LEFT JOIN idp i ON i.id = c.idp_id
+       WHERE c.designer_id = ?
+       ORDER BY c.created_at DESC, c.id DESC
+    `).all(designerId).map((row) => ({ ...row }));
+  }
+
   // endDate is inclusive, so compare with the day after it
   countConnectedCustomers(startDate, endDate) {
     return this.db
