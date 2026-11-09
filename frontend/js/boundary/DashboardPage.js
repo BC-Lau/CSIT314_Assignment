@@ -28,6 +28,8 @@ const MENU = {
   'User Admin': [
     { title: 'License verification', text: 'Review Interior Designer license applications', href: '/admin-verifications.html', ready: true },
     { title: 'User accounts', text: 'Create, view, update and suspend accounts', href: '/user-accounts.html', ready: true },
+    { title: 'Manage IDPs', text: 'View, suspend, remove and reactivate Interior Design Projects', href: '/admin-idps.html', ready: true },
+    { title: 'Suspicious activity', text: 'Review flagged customer accounts and IDPs', href: '/admin-moderation.html', ready: true },
     { title: 'User profiles', text: 'Manage the four user types' },
   ],
 };

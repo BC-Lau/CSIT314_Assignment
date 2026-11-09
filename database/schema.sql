@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS idp (
     style       TEXT    NOT NULL,              -- exactly 1 preset style
     type        TEXT    NOT NULL DEFAULT '[]', -- JSON array, 1..* preset types
     view_count  INTEGER NOT NULL DEFAULT 0,
+    is_suspended INTEGER NOT NULL DEFAULT 0,
     created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -149,3 +150,12 @@ WHERE status = 'booked';
 
 CREATE INDEX IF NOT EXISTS idx_consultation_request_customer
 ON consultation_request(customer_id);
+CREATE TABLE IF NOT EXISTS moderation_flag (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ subject_type TEXT NOT NULL CHECK(subject_type IN ('customer','idp')),
+ subject_id INTEGER NOT NULL, reason TEXT NOT NULL,
+ status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','accepted','suspended','removed')),
+ created_at TEXT NOT NULL DEFAULT (datetime('now')), reviewed_at TEXT,
+ UNIQUE(subject_type,subject_id)
+);
+CREATE INDEX IF NOT EXISTS idx_moderation_flag_status ON moderation_flag(status,created_at);

@@ -52,6 +52,28 @@ class IDP {
       .map(IDP.fromRow);
   }
 
+  /** All projects for the User Admin inventory, including suspended/private projects. */
+  getAllIDPsForAdmin() {
+    return this.db.prepare(`SELECT i.*, a.username AS designer_name, a.is_active AS designer_is_active,
+      (SELECT m.id FROM idp_media m WHERE m.idp_id=i.id AND m.mime_type LIKE 'image/%' ORDER BY m.id LIMIT 1) AS cover_media_id
+      FROM idp i JOIN user_account a ON a.id=i.designer_id
+      ORDER BY i.created_at DESC, i.id DESC`).all().map((row) => ({
+      ...IDP.fromRow(row),
+      designerIsActive: Boolean(row.designer_is_active),
+    }));
+  }
+
+  setSuspended(idpId, suspended) {
+    const result = this.db.prepare('UPDATE idp SET is_suspended=? WHERE id=?')
+      .run(suspended ? 1 : 0, Number(idpId));
+    return result.changes > 0;
+  }
+
+  canReactivate(idpId) {
+    return Boolean(this.db.prepare(`SELECT 1 FROM idp i JOIN user_account a ON a.id=i.designer_id
+      WHERE i.id=? AND a.is_active=1`).get(Number(idpId)));
+  }
+
   /** Favourites are removed by ON DELETE CASCADE; contact requests keep their history without the IDP. */
   deleteIDP(idpId) {
     this.db.prepare('UPDATE contact_request SET idp_id = NULL WHERE idp_id = ?').run(idpId);
@@ -60,7 +82,7 @@ class IDP {
 
   getLatestIDPs(limit = 12) {
     return this.db
-      .prepare(`${IDP.SELECT} WHERE i.visibility = 'public' ORDER BY i.created_at DESC, i.id DESC LIMIT ?`)
+      .prepare(`${IDP.SELECT} WHERE i.visibility = 'public' AND i.is_suspended = 0 AND a.is_active = 1 ORDER BY i.created_at DESC, i.id DESC LIMIT ?`)
       .all(limit)
       .map(IDP.fromRow);
   }
@@ -110,7 +132,7 @@ class IDP {
     const marks = (list) => list.map(() => '?').join(', ');
 
     let sql = `${IDP.SELECT}
-       WHERE i.visibility = 'public'
+       WHERE i.visibility = 'public' AND i.is_suspended = 0 AND a.is_active = 1
          AND (i.style IN (${marks(names)})
               OR EXISTS (SELECT 1 FROM json_each(i.type) WHERE value IN (${marks(names)})))`;
     const params = [...names, ...names];
@@ -128,7 +150,7 @@ class IDP {
    * duration and style (styleTag) must match exactly.
    */
   findByFilters(minBudget, maxBudget, minHouseSize, maxHouseSize, duration, styleTag) {
-    const conditions = ["i.visibility = 'public'"];
+    const conditions = ["i.visibility = 'public'", 'i.is_suspended = 0', 'a.is_active = 1'];
     const params = [];
     const add = (condition, value) => {
       if (value === null || value === undefined) return;
@@ -163,6 +185,7 @@ class IDP {
       style: row.style,
       type: JSON.parse(row.type),
       viewCount: Number(row.view_count ?? 0),
+      isSuspended: Boolean(row.is_suspended),
       createdAt: row.created_at,
       coverMediaId: row.cover_media_id,
     };

@@ -52,3 +52,12 @@ Double-click `sync.bat` (pull -> run tests -> commit -> push).
 
 ## User Story #24 — Media upload
 See [Story #24 implementation guide](docs/jeng-story24.md).
+
+
+## Suspicious activity moderation
+
+User Admins can open **Dashboard → Suspicious activity** to review automatically flagged customer accounts and IDPs.
+
+The current rule-based checks flag customer accounts for missing email addresses, URL-like or repeated-character usernames, or email addresses shared by multiple accounts. IDPs are flagged when their content contains external URLs or solicitation/payment-related terms, is unusually long, or repeats another IDP title by the same designer. These are review signals, not proof of abuse; a User Admin can accept a flag without restricting the item.
+
+Pending flags can be accepted, suspended, or removed. Suspended entries can also be reactivated directly from the moderation queue; reactivation clears the corresponding flag. The separate **Dashboard → Manage IDPs** inventory provides the same suspend, remove, and reactivate lifecycle controls for every project. Removing a customer account is implemented as a deactivation (rather than a hard database delete) so related consultation and activity records remain intact. Removing an IDP deletes the listing while preserving the moderation record. Suspending a designer from an IDP flag deactivates the designer account and marks all of their IDPs as suspended. Suspended IDPs are excluded from public listing, filtering, and recommendations.

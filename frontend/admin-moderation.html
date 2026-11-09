@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suspicious activity · InteriorMatch</title><link rel="stylesheet" href="/css/style.css"></head>
+<body><nav id="nav"></nav><main>
+<div class="page-heading"><div><a class="muted back-link" href="/dashboard.html">← Dashboard</a><h1>Suspicious activity</h1>
+<p class="muted">Review automatically flagged customer accounts and Interior Design Projects.</p></div>
+<button id="refreshFlags" class="btn secondary" type="button">Refresh</button></div>
+<p id="moderationMessage" class="message" role="status" aria-live="polite"></p>
+<div class="card"><div class="page-heading compact"><h2>Moderation queue</h2><label>Show <select id="flagFilter"><option value="all">All flags</option><option value="pending">Pending review</option><option value="suspended">Suspended</option><option value="accepted">Accepted</option><option value="removed">Removed</option></select></label></div>
+<div id="flagList" class="moderation-list"><p class="muted">Loading flags…</p></div></div>
+</main><script src="/js/common.js"></script><script src="/js/boundary/AdminModerationPage.js"></script><script>new AdminModerationPage().init();</script></body></html>
