@@ -1,6 +1,12 @@
+/**
+ * Entity for User Story #48: User Admins review Interior Designer license 
+ * applications. It stores submitted evidence and review outcomes; it does not
+ * independently validate licenses against an external registry.
+ */
 class VerificationApp {
   static database = null;
 
+  // Create a verification application object from incoming DB row data.
   constructor(db, data = {}) {
     this.db = db ?? VerificationApp.database;
     this.appId = Number(data.appId ?? data.id);
@@ -18,10 +24,12 @@ class VerificationApp {
       : new Date(data.submittedDate ?? data.submitted_date ?? Date.now());
   }
 
+  // Set the default database for all static queries.
   static useDatabase(db) {
     VerificationApp.database = db;
   }
 
+  // For #48 data.
   static createTableIfNeeded(db) {
     db.prepare(`CREATE TABLE IF NOT EXISTS verification_application (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,6 +58,7 @@ class VerificationApp {
     }
   }
 
+  // Convert a database row into a VerificationApp instance
   static fromRow(row) {
     return new VerificationApp(VerificationApp.database, {
       appId: row.id,
@@ -66,6 +75,7 @@ class VerificationApp {
     });
   }
 
+  // Record the User Admin's #48 decision; only rejected applications retain a reason.
   setStatus(status, rejectionReason = null) {
     if (!['Pending', 'Approved', 'Rejected'].includes(status)) {
       throw new Error('Invalid verification status');
@@ -81,6 +91,8 @@ class VerificationApp {
     return this;
   }
 
+  // Save a new #48 request, or reuse the latest non-approved request on resubmission.
+  // The pending queue and designer status page both read this same application record.
   static submitForDesigner(db, designerId, data) {
     VerificationApp.createTableIfNeeded(db);
     const submittedDate = new Date().toISOString();
@@ -112,6 +124,7 @@ class VerificationApp {
     return VerificationApp.findById(applicationId);
   }
 
+  // Fetch the newest verification record for a designer.
   static findLatestByDesigner(designerId) {
     if (!VerificationApp.database) return null;
     VerificationApp.createTableIfNeeded(VerificationApp.database);
@@ -121,6 +134,7 @@ class VerificationApp {
     return row ? VerificationApp.fromRow(row) : null;
   }
 
+  // Return a plain object for API responses or UI rendering.
   getDetails() {
     return {
       appId: this.appId,
@@ -137,6 +151,7 @@ class VerificationApp {
     };
   }
 
+  // Supplies the User Admin's #48 review queue, oldest pending request first.
   static findPending() {
     if (!VerificationApp.database) return [];
     VerificationApp.createTableIfNeeded(VerificationApp.database);
@@ -145,6 +160,7 @@ class VerificationApp {
     ).all().map(VerificationApp.fromRow);
   }
 
+  // Fetch one application by its ID.
   static findById(appId) {
     if (!VerificationApp.database) return null;
     VerificationApp.createTableIfNeeded(VerificationApp.database);
@@ -154,6 +170,7 @@ class VerificationApp {
     return row ? VerificationApp.fromRow(row) : null;
   }
 
+  // Fetch uploaded document metadata and binary content by application ID.
   static findDocumentById(appId) {
     if (!VerificationApp.database) return null;
     VerificationApp.createTableIfNeeded(VerificationApp.database);
@@ -164,6 +181,7 @@ class VerificationApp {
     ).get(id) ?? null;
   }
 
+  // Fetch the latest uploaded document for a designer.
   static findDocumentForDesigner(designerId) {
     if (!VerificationApp.database) return null;
     VerificationApp.createTableIfNeeded(VerificationApp.database);
