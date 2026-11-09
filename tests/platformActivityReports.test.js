@@ -49,6 +49,7 @@ test('Platform Managers can generate daily, weekly, monthly and yearly activity 
   `);
   interaction.run(customerId, idpId, 'view', '2026-04-03 10:00:00');
   interaction.run(customerId, idpId, 'favourite', '2026-04-04 10:00:00');
+  interaction.run(customerId, idpId, 'message', '2026-04-05 08:59:59');
   interaction.run(outsideCustomerId, idpId, 'view', '2026-04-06 10:00:00');
 
   const server = app.listen(0, '127.0.0.1');
@@ -77,7 +78,8 @@ test('Platform Managers can generate daily, weekly, monthly and yearly activity 
       consultationsBooked: 1,
       consultationsCancelled: 1,
       idpViews: 1,
-      idpFavourites: 1
+      idpFavourites: 1,
+      idpMessages: 1
     });
 
     const daily = await request('daily', '2026-04-02');
@@ -101,6 +103,7 @@ test('Platform Managers can generate daily, weekly, monthly and yearly activity 
     assert.equal(year.data.report.endDate, '2026-12-31');
     assert.equal(year.data.report.metrics.find((metric) => metric.key === 'newAccounts').count, 4);
     assert.equal(year.data.report.metrics.find((metric) => metric.key === 'customerContacts').count, 2);
+    assert.equal(year.data.report.metrics.find((metric) => metric.key === 'idpMessages').count, 1);
 
     const leapYear = await request('yearly', '2024-02-29');
     assert.equal(leapYear.status, 200);

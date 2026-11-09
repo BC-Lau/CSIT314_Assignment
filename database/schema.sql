@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS interaction_log (
     id                  INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id         INTEGER NOT NULL REFERENCES user_account(id),
     idp_id              INTEGER NOT NULL REFERENCES idp(id) ON DELETE CASCADE,
-    interaction_type    TEXT NOT NULL CHECK (interaction_type IN ('view', 'favourite', 'comment', 'consultation_request')),
+    interaction_type    TEXT NOT NULL CHECK (interaction_type IN ('view', 'favourite', 'message', 'consultation_request')),
     timestamp           TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_interaction_log_idp_time ON interaction_log(idp_id, timestamp);

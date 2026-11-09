@@ -3,8 +3,9 @@
  * Records consultation requests and reserves available slots.
  */
 class ConsultationRequest {
-  constructor(db) {
+  constructor(db, interactionController = null) {
     this.db = db;
+    this.interactionController = interactionController;
   }
 
   // Find a consultation request by its slot ID.
@@ -19,12 +20,14 @@ class ConsultationRequest {
   }
 
   // Reserve a slot and record the customer atomically.
-  createRequest(slotID, customerID, message = '') {
+  createRequest(slotID, customerID, message = '', idpID = null) {
     const id = Number(slotID);
     const customer = Number(customerID);
+    const projectId = idpID == null || idpID === '' ? null : Number(idpID);
 
     if (!Number.isSafeInteger(id) || id <= 0 ||
-        !Number.isSafeInteger(customer) || customer <= 0) {
+        !Number.isSafeInteger(customer) || customer <= 0 ||
+        (projectId !== null && (!Number.isSafeInteger(projectId) || projectId <= 0))) {
       throw new Error('Invalid consultation slot or customer');
     }
 
@@ -33,8 +36,10 @@ class ConsultationRequest {
 
     try {
       const slot = this.db.prepare(
-        `SELECT id, start_time, status
-         FROM consultation_slot WHERE id = ?`
+        `SELECT cs.id, cs.start_time, cs.status, s.designer_id AS designer_id
+         FROM consultation_slot cs
+         JOIN availability_schedule s ON s.id = cs.schedule_id
+         WHERE cs.id = ?`
       ).get(id);
 
       if (!slot) {
@@ -47,6 +52,14 @@ class ConsultationRequest {
 
       if (Date.parse(slot.start_time) <= Date.now()) {
         throw new Error('Cannot book a past consultation slot');
+      }
+      if (projectId !== null) {
+        const project = this.db.prepare(`
+          SELECT id FROM idp
+          WHERE id = ? AND designer_id = ? AND visibility = 'public'
+        `).get(projectId, slot.designer_id);
+        if (!project) throw new Error('Project does not belong to this designer or is unavailable');
+        if (!this.interactionController) throw new Error('Consultation interaction tracking is unavailable');
       }
 
       const result = this.db.prepare(
@@ -63,6 +76,13 @@ class ConsultationRequest {
 
       if (updated.changes !== 1) {
         throw new Error('Consultation slot is no longer available');
+      }
+      if (projectId !== null && !this.interactionController.logInteraction(
+        customer,
+        projectId,
+        'consultation_request'
+      )) {
+        throw new Error('Unable to record the consultation interaction');
       }
 
       this.db.exec('COMMIT');

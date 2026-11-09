@@ -1,8 +1,8 @@
 class InteractionLog {
   static database = null;
-  static allowedTypes = ['view', 'favourite', 'comment', 'consultation_request'];
-  static idpInteractionTypes = ['favourite', 'comment'];
-  static customerDesignerInteractionTypes = ['consultation_request'];
+  static allowedTypes = ['view', 'favourite', 'message', 'consultation_request'];
+  static idpInteractionTypes = ['favourite', 'message', 'consultation_request'];
+  static customerDesignerInteractionTypes = ['message', 'consultation_request'];
 
   constructor(db, data = {}) {
     this.db = db ?? InteractionLog.database;
@@ -21,12 +21,16 @@ class InteractionLog {
 
   static createLog(customerId, idpId, type) {
     if (!InteractionLog.database) throw new Error('InteractionLog database is not configured');
+    return InteractionLog.createLogForDatabase(InteractionLog.database, customerId, idpId, type);
+  }
+
+  static createLogForDatabase(db, customerId, idpId, type) {
     if (!InteractionLog.allowedTypes.includes(type)) throw new Error('Invalid interaction type');
-    const result = InteractionLog.database.prepare(`
+    const result = db.prepare(`
       INSERT INTO interaction_log (customer_id, idp_id, interaction_type, timestamp)
       VALUES (?, ?, ?, datetime('now'))
     `).run(Number(customerId), Number(idpId), type);
-    return InteractionLog.database.prepare('SELECT * FROM interaction_log WHERE id = ?')
+    return db.prepare('SELECT * FROM interaction_log WHERE id = ?')
       .get(Number(result.lastInsertRowid));
   }
 

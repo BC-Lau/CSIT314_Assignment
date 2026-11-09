@@ -13,8 +13,12 @@ class TrackInteractionRateController {
     if (!customer || customer.profile !== 'Customer' || !Number.isInteger(Number(idpId))) return false;
     const idp = this.db.prepare('SELECT id FROM idp WHERE id = ?').get(Number(idpId));
     if (!idp || !InteractionLog.allowedTypes.includes(type)) return false;
-    InteractionLog.createLog(Number(customerId), Number(idpId), type);
+    InteractionLog.createLogForDatabase(this.db, Number(customerId), Number(idpId), type);
     return true;
+  }
+
+  logMessage(customerId, idpId) {
+    return this.logInteraction(customerId, idpId, 'message');
   }
 
   convertLogsToData(idpId) {
@@ -54,7 +58,7 @@ class TrackInteractionRateController {
     for (const idp of idps) {
       const logs = InteractionLog.getLogsByIdp(idp.id, period);
       const interactions = logs.filter((log) => {
-        if (log.interactionType === 'view') return false;
+        if (!InteractionLog.idpInteractionTypes.includes(log.interactionType)) return false;
         return !interactionType || interactionType === 'all' || log.interactionType === interactionType;
       }).length;
       const views = period === 'all'

@@ -84,6 +84,14 @@ class PlatformActivityReport {
           SELECT COUNT(*) AS count FROM interaction_log
            WHERE interaction_type = 'favourite' AND ${interval('timestamp')}
         `, startDate, endDateExclusive)
+      },
+      {
+        key: 'idpMessages',
+        label: 'IDP-linked messages sent',
+        count: count(`
+          SELECT COUNT(*) AS count FROM interaction_log
+           WHERE interaction_type = 'message' AND ${interval('timestamp')}
+        `, startDate, endDateExclusive)
       }
     ];
   }

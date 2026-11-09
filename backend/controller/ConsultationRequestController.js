@@ -17,7 +17,7 @@ class ConsultationRequestController {
   }
 
   // Record a customer's consultation request.
-  requestConsultation(user, slotID, message = '') {
+  requestConsultation(user, slotID, message = '', idpID = null) {
     if (!this.isCustomer(user)) {
       return {
         success: false,
@@ -48,7 +48,8 @@ class ConsultationRequestController {
       const booking = this.consultationRequest.createRequest(
         id,
         user.id,
-        message.trim()
+        message.trim(),
+        idpID
       );
 
       return {

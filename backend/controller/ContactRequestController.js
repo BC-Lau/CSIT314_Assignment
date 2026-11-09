@@ -1,7 +1,8 @@
 // CONTROLLER: customers contact designers about a project or renovation idea.
 class ContactRequestController {
-  constructor(contactRequest) {
+  constructor(contactRequest, interactionController) {
     this.contactRequest = contactRequest;
+    this.interactionController = interactionController;
   }
 
   createRequest(user, designerId, idpId, message) {
@@ -35,12 +36,26 @@ class ContactRequestController {
       return { success: false, status: 400, message: 'Message must be between 1 and 2000 characters' };
     }
 
-    const requestId = this.contactRequest.createRequest(
-      user.id,
-      targetDesignerId,
-      targetIDPId,
-      message.trim()
-    );
+    const db = this.contactRequest.db;
+    db.exec('BEGIN IMMEDIATE');
+    let requestId;
+    try {
+      requestId = this.contactRequest.createRequest(
+        user.id,
+        targetDesignerId,
+        targetIDPId,
+        message.trim()
+      );
+      if (targetIDPId !== null) {
+        if (!this.interactionController?.logMessage(user.id, targetIDPId)) {
+          throw new Error('Unable to record the message interaction');
+        }
+      }
+      db.exec('COMMIT');
+    } catch (error) {
+      db.exec('ROLLBACK');
+      throw error;
+    }
     return {
       success: true,
       status: 201,

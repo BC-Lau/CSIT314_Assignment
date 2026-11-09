@@ -4,8 +4,9 @@
  * Customer read-only consultation availability.
  */
 class CustomerAvailabilityPage {
-  constructor(container) {
+  constructor(container, idpId = null) {
     this.container = container;
+    this.idpId = idpId;
   }
 
   async displaySlots(designerID) {
@@ -105,7 +106,7 @@ class CustomerAvailabilityPage {
           });
 
           requestButton.addEventListener('click', () => {
-            this.showRequestForm(slot, designerID);
+            this.showRequestForm(slot, designerID, this.idpId);
           });
 
           slotCard.append(el('p', {}, requestButton));
@@ -125,7 +126,7 @@ class CustomerAvailabilityPage {
 
   
   // Display a confirmation form for the chosen consultation slot.
-  showRequestForm(slot, designerID) {
+  showRequestForm(slot, designerID, idpId = this.idpId) {
     // Remove an existing request form if one is already open.
     document.getElementById('consultationRequestForm')?.remove();
 
@@ -198,6 +199,7 @@ class CustomerAvailabilityPage {
       try {
         const result = await Api.post('/api/consultation-requests', {
           slotID: slot.slotID,
+          idpId,
           message: messageInput.value
         });
 

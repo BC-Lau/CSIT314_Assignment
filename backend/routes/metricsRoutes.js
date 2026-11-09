@@ -9,6 +9,7 @@ const AddDemoContactsController = require('../controller/AddDemoContactsControll
 const TrackInteractionRateController = require('../controller/TrackInteractionRateController');
 const PlatformActivityReport = require('../entity/PlatformActivityReport');
 const PlatformActivityReportController = require('../controller/PlatformActivityReportController');
+const InteractionLog = require('../entity/InteractionLog');
 
 function metricsRoutes(db) {
   const router = express.Router();
@@ -24,6 +25,9 @@ function metricsRoutes(db) {
     if (!user || user.profile !== 'Customer') {
       return res.status(403).json({ success: false, message: 'Only customers can submit interaction telemetry' });
     }
+    if (req.body?.type !== 'view') {
+      return res.status(400).json({ success: false, message: 'Only IDP views can be submitted as telemetry' });
+    }
     const logged = interactionController.logInteraction(user.id, req.body?.idpId, req.body?.type);
     return res.status(logged ? 201 : 400).json({
       success: logged,
@@ -37,6 +41,11 @@ function metricsRoutes(db) {
     const user = userAccount.findById(req.get('X-User-Id'));
     if (!user || user.profile !== 'Platform Manager') {
       return res.status(403).json({ success: false, message: 'Only platform managers can view interaction reports' });
+    }
+    const interactionType = req.query.interactionType;
+    if (interactionType && interactionType !== 'all'
+      && !InteractionLog.idpInteractionTypes.includes(interactionType)) {
+      return res.status(400).json({ success: false, message: 'Invalid interaction type filter' });
     }
     const report = interactionController.generateIdpInteractionRateReport(
       req.query.timeframe,
