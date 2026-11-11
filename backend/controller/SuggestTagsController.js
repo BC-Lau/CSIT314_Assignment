@@ -10,7 +10,7 @@ class SuggestTagsController {
     this.aiService = aiService;
   }
 
-  /** Only suggests: nothing is saved,need login . */
+  /** Only suggests: nothing is saved, so there is no login check here (createIDP checks the user). */
   async suggestTags(description) {
     const text = typeof description === 'string' ? description.trim() : '';
     if (!text) return { success: false, message: 'Description is required' };
