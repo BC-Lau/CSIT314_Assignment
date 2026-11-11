@@ -50,11 +50,6 @@ tests/          unit tests (*.test.js)
 docs/           diagrams, guides (see docs/HOW_TO_ADD_A_FEATURE.md)
 ```
 
-## Sync with GitHub
-Double-click `sync.bat` (pull -> run tests -> commit -> push).
-
-## User Story #24 — Media upload
-See [Story #24 implementation guide](docs/jeng-story24.md).
 
 
 ## Suspicious activity moderation

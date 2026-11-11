@@ -4,7 +4,3 @@ database/*.db
 .DS_Store
 Thumbs.db
 .vscode/
-.claude/
-
-# Report drafts and notes stay in Before_Upload only (never uploaded)
-_report/

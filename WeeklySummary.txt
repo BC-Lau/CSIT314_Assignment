@@ -1,3 +1,0 @@
-Week 1:
-We discussed what development software to use : Javascript and SQLite.
-Writing user story on Google docs: https://docs.google.com/document/d/1_X9VwUrGWDq28MKoeTIALzP4L-ESflm4s6sI_WJyocg/edit?usp=sharing
