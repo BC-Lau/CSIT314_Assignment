@@ -47,7 +47,7 @@ function idpRoutes(db, { aiService = new AIService() } = {}) {
     res.status(statusCode).json(body);
   });
 
-  // #23 Suggest tags (used by the Create IDP form; Update IDP will reuse it)
+  // #23 Suggest tags (used by the Create IDP form)
   router.post('/suggest-tags', async (req, res) => {
     const result = await suggestTagsController.suggestTags(req.body?.description);
     res.status(result.success ? 200 : 400).json(result);

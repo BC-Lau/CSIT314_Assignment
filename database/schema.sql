@@ -4,7 +4,7 @@
 -- backend/entity/. Keep them in sync with the class diagrams.
 -- =====================================================================
 
--- User profiles = the 4 user types in the spec
+-- User profiles = the 4 user types (User Admin, Interior Designer, Customer, Platform Manager)
 CREATE TABLE IF NOT EXISTS user_profile (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT    NOT NULL UNIQUE,
